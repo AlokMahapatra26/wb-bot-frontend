@@ -1,0 +1,11 @@
+---
+import Layout from '../layouts/Layout.astro';
+import DashboardComponent from '../components/Dashboard.jsx';
+
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL || import.meta.env.SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.env.SUPABASE_ANON_KEY || '';
+const botUrl = import.meta.env.BOT_URL || 'http://localhost:3000';
+---
+<Layout title="WhatsApp Bot Dashboard">
+    <DashboardComponent client:only="react" supabaseUrl={supabaseUrl} supabaseAnonKey={supabaseAnonKey} botUrl={botUrl} />
+</Layout>
