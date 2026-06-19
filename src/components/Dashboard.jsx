@@ -689,72 +689,206 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
     }
 
     return (
-        <>
-            <header className="header">
-                <span className="logo">Whatsapp AI Bot <span>Creator</span></span>
-                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                    <button 
-                        type="button" 
-                        onClick={() => { setActiveView('chat'); setActiveChatJid(null); }} 
-                        className="btn-sm" 
-                        style={{ 
-                            width: 'auto', 
-                            fontSize: '0.75rem', 
-                            fontWeight: 600, 
-                            padding: '0.35rem 0.65rem',
-                            background: activeView === 'chat' ? 'var(--primary)' : 'var(--white)',
-                            color: activeView === 'chat' ? '#171717' : 'var(--text)',
-                            borderColor: activeView === 'chat' ? 'var(--primary)' : 'var(--border-dark)'
-                        }}
-                    >
-                        Status & Logs
-                    </button>
-                    <button 
-                        type="button" 
-                        onClick={() => { setActiveView('responder'); setActiveChatJid(null); }} 
-                        className="btn-sm" 
-                        style={{ 
-                            width: 'auto', 
-                            fontSize: '0.75rem', 
-                            fontWeight: 600, 
-                            padding: '0.35rem 0.65rem',
-                            background: activeView === 'responder' ? 'var(--primary)' : 'var(--white)',
-                            color: activeView === 'responder' ? '#171717' : 'var(--text)',
-                            borderColor: activeView === 'responder' ? 'var(--primary)' : 'var(--border-dark)'
-                        }}
-                    >
-                        Individual Responder
-                    </button>
-                    <button 
-                        type="button" 
-                        onClick={() => { setActiveView('business'); setActiveChatJid(null); }} 
-                        className="btn-sm" 
-                        style={{ 
-                            width: 'auto', 
-                            fontSize: '0.75rem', 
-                            fontWeight: 600, 
-                            padding: '0.35rem 0.65rem',
-                            background: activeView === 'business' ? 'var(--primary)' : 'var(--white)',
-                            color: activeView === 'business' ? '#171717' : 'var(--text)',
-                            borderColor: activeView === 'business' ? 'var(--primary)' : 'var(--border-dark)'
-                        }}
-                    >
-                        Business Autopilot
-                    </button>
-                    
-                    <span style={{ width: '1px', height: '16px', background: 'var(--border)', margin: '0 0.25rem' }}></span>
+        <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden', background: 'var(--bg)' }}>
+            <style dangerouslySetInnerHTML={{__html: `
+                .sidebar-nav-btn:hover {
+                    background: var(--canvas-soft) !important;
+                    border-color: var(--border-dark) !important;
+                }
+                .sidebar-nav-btn:active {
+                    transform: scale(0.98);
+                }
+            `}} />
 
-                    <button type="button" onClick={toggleTheme} className="btn-sm" style={{ width: 'auto', fontSize: '0.75rem', fontWeight: 600, padding: '0.35rem 0.65rem' }}>
-                        {theme === 'dark' ? 'Light' : 'Dark'}
+            {/* Sidebar Navigation */}
+            <aside style={{
+                width: '260px',
+                background: 'var(--white)',
+                borderRight: '1px solid var(--border)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                padding: '1.5rem',
+                flexShrink: 0,
+                height: '100%',
+                boxSizing: 'border-box'
+            }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                    {/* Brand Logo */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                        <span className="logo" style={{ fontSize: '1.05rem', fontWeight: 700 }}>Whatsapp AI Bot <span style={{ color: 'var(--primary)' }}>Creator</span></span>
+                        <span style={{ fontSize: '0.65rem', fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '-2px' }}>Admin Dashboard</span>
+                    </div>
+
+                    {/* Navigation Menu */}
+                    <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                        <button 
+                            type="button" 
+                            onClick={() => { setActiveView('chat'); setActiveChatJid(null); }} 
+                            style={{ 
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.75rem',
+                                width: '100%',
+                                textAlign: 'left',
+                                fontSize: '0.8rem', 
+                                fontWeight: 600, 
+                                padding: '0.7rem 0.85rem',
+                                borderRadius: 'var(--radius-sm)',
+                                background: activeView === 'chat' ? 'var(--primary)' : 'transparent',
+                                color: activeView === 'chat' ? '#171717' : 'var(--text)',
+                                border: '1px solid',
+                                borderColor: activeView === 'chat' ? 'var(--primary)' : 'transparent',
+                                cursor: 'pointer',
+                                transition: 'all 0.15s ease'
+                            }}
+                            className="sidebar-nav-btn"
+                        >
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="9" y1="9" x2="15" y2="9"/>
+                                <line x1="9" y1="13" x2="15" y2="13"/>
+                                <line x1="9" y1="17" x2="11" y2="17"/>
+                            </svg>
+                            <span>Status & Logs</span>
+                        </button>
+                        
+                        <button 
+                            type="button" 
+                            onClick={() => { setActiveView('responder'); setActiveChatJid(null); }} 
+                            style={{ 
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.75rem',
+                                width: '100%',
+                                textAlign: 'left',
+                                fontSize: '0.8rem', 
+                                fontWeight: 600, 
+                                padding: '0.7rem 0.85rem',
+                                borderRadius: 'var(--radius-sm)',
+                                background: activeView === 'responder' ? 'var(--primary)' : 'transparent',
+                                color: activeView === 'responder' ? '#171717' : 'var(--text)',
+                                border: '1px solid',
+                                borderColor: activeView === 'responder' ? 'var(--primary)' : 'transparent',
+                                cursor: 'pointer',
+                                transition: 'all 0.15s ease'
+                            }}
+                            className="sidebar-nav-btn"
+                        >
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                            <span>Individual Responder</span>
+                        </button>
+                        
+                        <button 
+                            type="button" 
+                            onClick={() => { setActiveView('business'); setActiveChatJid(null); }} 
+                            style={{ 
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.75rem',
+                                width: '100%',
+                                textAlign: 'left',
+                                fontSize: '0.8rem', 
+                                fontWeight: 600, 
+                                padding: '0.7rem 0.85rem',
+                                borderRadius: 'var(--radius-sm)',
+                                background: activeView === 'business' ? 'var(--primary)' : 'transparent',
+                                color: activeView === 'business' ? '#171717' : 'var(--text)',
+                                border: '1px solid',
+                                borderColor: activeView === 'business' ? 'var(--primary)' : 'transparent',
+                                cursor: 'pointer',
+                                transition: 'all 0.15s ease'
+                            }}
+                            className="sidebar-nav-btn"
+                        >
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                            </svg>
+                            <span>Business Autopilot</span>
+                        </button>
+                    </nav>
+                </div>
+
+                {/* Sidebar Footer */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <button 
+                        type="button" 
+                        onClick={toggleTheme} 
+                        style={{ 
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.75rem',
+                            width: '100%',
+                            fontSize: '0.75rem', 
+                            fontWeight: 600, 
+                            padding: '0.55rem 0.75rem',
+                            borderRadius: 'var(--radius-sm)',
+                            background: 'var(--canvas-soft)',
+                            color: 'var(--text)',
+                            border: '1px solid var(--border)',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        {theme === 'dark' ? (
+                            <>
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                    <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                                </svg>
+                                <span>Light Mode</span>
+                            </>
+                        ) : (
+                            <>
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                                </svg>
+                                <span>Dark Mode</span>
+                            </>
+                        )}
                     </button>
                     
-                    <button type="button" onClick={handleLogout} className="btn-sm" style={{ width: 'auto', fontSize: '0.75rem', fontWeight: 600, padding: '0.35rem 0.65rem', background: '#ef4444', color: '#fff', borderColor: '#ef4444' }}>
-                        Logout
+                    <button 
+                        type="button" 
+                        onClick={handleLogout} 
+                        style={{ 
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.75rem',
+                            width: '100%',
+                            fontSize: '0.75rem', 
+                            fontWeight: 600, 
+                            padding: '0.55rem 0.75rem',
+                            borderRadius: 'var(--radius-sm)',
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            color: '#ef4444',
+                            border: '1px solid rgba(239, 68, 68, 0.2)',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+                        </svg>
+                        <span>Logout</span>
                     </button>
                 </div>
-            </header>
+            </aside>
 
-            <main className="container" style={{ display: 'grid', gridTemplateColumns: activeView === 'business' ? '1fr 1.5fr' : '1fr 1fr' }}>
+            {/* Main Content Pane */}
+            <div style={{ flex: 1, height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                <main className="container" style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: activeView === 'business' ? '1fr 1.5fr' : '1fr 1fr',
+                    height: '100%',
+                    width: '100%',
+                    maxWidth: '100%',
+                    padding: '1.5rem',
+                    gap: '1.5rem',
+                    margin: 0,
+                    overflowY: 'hidden',
+                    boxSizing: 'border-box'
+                }}>
                 {activeView === 'chat' && (
                     <>
                         {/* COL 1: Integration & System settings */}
@@ -949,12 +1083,12 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
                         </div>
 
                         {/* COL 2: Active Rules configurations OR Live Chat Detail */}
-                        <div className="column-right">
+                        <div className="column-right" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', height: '100%', overflow: 'hidden' }}>
                             {activeChatJid ? (
                                 <div id="chat-detail-screen" className="card feed-panel" style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                                     <div className="panel-title" style={{ padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', borderBottom: '1px solid var(--border)' }}>
                                         <button type="button" onClick={() => setActiveChatJid(null)} className="select-sender-btn" style={{ margin: 0, padding: '0.25rem 0.6rem', fontSize: '0.72rem' }}>
-                                            &larr; Back to Configs
+                                            &larr; Back to List
                                         </button>
                                         <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.25, flex: 1, minWidth: 0 }}>
                                             <span id="detail-chat-title" style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -990,71 +1124,173 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
                                     </form>
                                 </div>
                             ) : (
-                                <div className="card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                                    <div className="panel-title">Active AI JID Configurations</div>
-                                    <div id="ai-contacts-list" className="contacts-list-container" style={{ flex: 1, overflowY: 'auto' }}>
-                                        {aiContacts.length === 0 ? (
-                                            <div className="empty-state">No auto-responder configurations added.</div>
-                                        ) : (
-                                            aiContacts.map((c, i) => (
-                                                <div key={i} className="ai-contact-row" onClick={() => handleEditConfig(c)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }} title="Click to edit configuration">
-                                                    <div className="contact-info" style={{ flex: 1 }}>
-                                                        <span className="contact-number" style={{ fontWeight: 600 }}>{c.number}</span>
-                                                        <span className="contact-prompt" style={{ fontSize: '0.7rem', display: 'block', opacity: 0.85 }}>{c.systemPrompt || 'Default AI text style'}</span>
-                                                        {c.senderContext && (
-                                                            <span className="contact-prompt" style={{ fontSize: '0.65rem', display: 'flex', alignItems: 'center', gap: '4px', opacity: 0.75, marginTop: '2px' }}>
-                                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                                                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                                                    <circle cx="12" cy="7" r="4" />
+                                <>
+                                    {/* Active JID Configurations Card */}
+                                    <div className="card" style={{ flex: '1 1 0%', minHeight: '200px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                                        <div className="panel-title" style={{ paddingBottom: '0.5rem', borderBottom: '1px solid var(--border)' }}>Active AI JID Configurations</div>
+                                        <div id="ai-contacts-list" className="contacts-list-container" style={{ flex: 1, overflowY: 'auto', marginTop: '0.75rem' }}>
+                                            {aiContacts.length === 0 ? (
+                                                <div className="empty-state">No auto-responder configurations added.</div>
+                                            ) : (
+                                                aiContacts.map((c, i) => (
+                                                    <div key={i} className="ai-contact-row" onClick={() => handleEditConfig(c)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }} title="Click to edit configuration">
+                                                        <div className="contact-info" style={{ flex: 1 }}>
+                                                            <span className="contact-number" style={{ fontWeight: 600 }}>{c.number}</span>
+                                                            <span className="contact-prompt" style={{ fontSize: '0.7rem', display: 'block', opacity: 0.85 }}>{c.systemPrompt || 'Default AI text style'}</span>
+                                                            {c.senderContext && (
+                                                                <span className="contact-prompt" style={{ fontSize: '0.65rem', display: 'flex', alignItems: 'center', gap: '4px', opacity: 0.75, marginTop: '2px' }}>
+                                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                                                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                                                        <circle cx="12" cy="7" r="4" />
+                                                                    </svg>
+                                                                    <span>{c.senderContext.length > 52 ? `${c.senderContext.substring(0, 52)}…` : c.senderContext}</span>
+                                                                </span>
+                                                            )}
+                                                            {c.contactContext && (
+                                                                <span className="contact-prompt" style={{ fontSize: '0.65rem', display: 'flex', alignItems: 'center', gap: '4px', opacity: 0.75, marginTop: '2px' }}>
+                                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                                                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                                                        <polyline points="14 2 14 8 20 8" />
+                                                                        <line x1="16" y1="13" x2="8" y2="13" />
+                                                                        <line x1="16" y1="17" x2="8" y2="17" />
+                                                                    </svg>
+                                                                    <span>{c.contactContext.length > 52 ? `${c.contactContext.substring(0, 52)}…` : c.contactContext}</span>
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                                            <button 
+                                                                type="button" 
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setActiveChatJid(c.number);
+                                                                }} 
+                                                                className="btn-sm btn-primary" 
+                                                                style={{ 
+                                                                    width: 'auto', 
+                                                                    fontSize: '0.7rem', 
+                                                                    fontWeight: 600, 
+                                                                    padding: '0.25rem 0.55rem',
+                                                                    display: 'inline-flex',
+                                                                    alignItems: 'center',
+                                                                    gap: '4px',
+                                                                    margin: 0
+                                                                }}
+                                                            >
+                                                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                                                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                                                                 </svg>
-                                                                <span>{c.senderContext.length > 52 ? `${c.senderContext.substring(0, 52)}…` : c.senderContext}</span>
+                                                                Chat
+                                                            </button>
+                                                            <span className="remove-badge-btn" onClick={(e) => { e.stopPropagation(); handleRemoveContactConfig(c.number); }} style={{ color: '#ef4444', fontSize: '1.2rem', padding: '0 5px' }}>
+                                                                &times;
                                                             </span>
-                                                        )}
-                                                        {c.contactContext && (
-                                                            <span className="contact-prompt" style={{ fontSize: '0.65rem', display: 'flex', alignItems: 'center', gap: '4px', opacity: 0.75, marginTop: '2px' }}>
-                                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                                                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                                                    <polyline points="14 2 14 8 20 8" />
-                                                                    <line x1="16" y1="13" x2="8" y2="13" />
-                                                                    <line x1="16" y1="17" x2="8" y2="17" />
-                                                                </svg>
-                                                                <span>{c.contactContext.length > 52 ? `${c.contactContext.substring(0, 52)}…` : c.contactContext}</span>
-                                                            </span>
-                                                        )}
+                                                        </div>
                                                     </div>
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                                                        <button 
-                                                            type="button" 
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setActiveChatJid(c.number);
-                                                            }} 
-                                                            className="btn-sm btn-primary" 
-                                                            style={{ 
-                                                                width: 'auto', 
-                                                                fontSize: '0.7rem', 
-                                                                fontWeight: 600, 
-                                                                padding: '0.25rem 0.55rem',
-                                                                display: 'inline-flex',
-                                                                alignItems: 'center',
-                                                                gap: '4px',
-                                                                margin: 0
-                                                            }}
-                                                        >
-                                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
-                                                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                                                            </svg>
-                                                            Chat
-                                                        </button>
-                                                        <span className="remove-badge-btn" onClick={(e) => { e.stopPropagation(); handleRemoveContactConfig(c.number); }} style={{ color: '#ef4444', fontSize: '1.2rem', padding: '0 5px' }}>
-                                                            &times;
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            ))
-                                        )}
+                                                ))
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
+
+                                    {/* Recent Conversations (Inbox) Card */}
+                                    <div className="card" style={{ flex: '1.5 1 0%', minHeight: '250px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                                        <div className="panel-title" style={{ paddingBottom: '0.5rem', borderBottom: '1px solid var(--border)' }}>Recent Conversations (Inbox)</div>
+                                        <div id="chat-list" className="feed-box" style={{ flex: 1, overflowY: 'auto', marginTop: '0.75rem', gap: '0.5rem', display: 'flex', flexDirection: 'column' }}>
+                                            {recentChats.length === 0 ? (
+                                                <div className="empty-state">No conversations captured yet.</div>
+                                            ) : (
+                                                recentChats.map((chat, idx) => (
+                                                    <div key={idx} className="chat-thread-row" onClick={() => setActiveChatJid(chat.chat_jid)} style={{ cursor: 'pointer', padding: '0.65rem 0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', display: 'flex', gap: '0.5rem', alignItems: 'center', position: 'relative', background: 'var(--canvas-soft)' }}>
+                                                        <div style={{ flex: 1, minWidth: 0 }}>
+                                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                                                                <span style={{ fontWeight: 600, fontSize: '0.78rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                                    {chat.sender_name || chat.chat_jid.split('@')[0]}
+                                                                </span>
+                                                                <span style={{ fontSize: '0.58rem', color: 'var(--dim)' }}>
+                                                                    {new Date(chat.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                                </span>
+                                                            </div>
+                                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3px', alignItems: 'center' }}>
+                                                                <span style={{ fontSize: '0.7rem', color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '85%' }}>
+                                                                    {chat.is_from_me ? 'Me: ' : ''}{chat.latest_message}
+                                                                </span>
+                                                                <span style={{ fontSize: '0.58rem', color: 'var(--dim)', fontFamily: 'monospace' }}>
+                                                                    {chat.chat_jid.split('@')[0]}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        {/* Options Trigger (3 dots) */}
+                                                        <div style={{ position: 'relative', display: 'inline-block' }}>
+                                                            <button 
+                                                                type="button" 
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setOpenDropdownJid(openDropdownJid === chat.chat_jid ? null : chat.chat_jid);
+                                                                }} 
+                                                                style={{ 
+                                                                    background: 'none', 
+                                                                    border: 'none', 
+                                                                    color: 'var(--muted)', 
+                                                                    fontSize: '0.9rem', 
+                                                                    cursor: 'pointer', 
+                                                                    padding: '0.2rem 0.4rem', 
+                                                                    borderRadius: '4px',
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'center',
+                                                                    transition: 'color 0.15s, background-color 0.15s'
+                                                                }}
+                                                                className="options-trigger-btn"
+                                                            >
+                                                                ⋮
+                                                            </button>
+                                                            {openDropdownJid === chat.chat_jid && (
+                                                                <div 
+                                                                    style={{ 
+                                                                        position: 'absolute', 
+                                                                        right: 0, 
+                                                                        top: '100%', 
+                                                                        marginTop: '4px',
+                                                                        background: 'var(--white)', 
+                                                                        border: '1px solid var(--border)', 
+                                                                        borderRadius: 'var(--radius-sm)', 
+                                                                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)', 
+                                                                        zIndex: 100,
+                                                                        minWidth: '100px'
+                                                                    }}
+                                                                >
+                                                                    <button 
+                                                                        type="button" 
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            setOpenDropdownJid(null);
+                                                                            handleDeleteChat(e, chat.chat_jid);
+                                                                        }} 
+                                                                        style={{ 
+                                                                            width: '100%', 
+                                                                            textAlign: 'left', 
+                                                                            background: 'none', 
+                                                                            border: 'none', 
+                                                                            padding: '0.55rem 0.75rem', 
+                                                                            color: '#ef4444', 
+                                                                            fontSize: '0.75rem', 
+                                                                            cursor: 'pointer',
+                                                                            fontWeight: 600
+                                                                        }}
+                                                                        className="dropdown-menu-item delete-chat-btn"
+                                                                    >
+                                                                        Delete Chat
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            )}
+                                        </div>
+                                    </div>
+                                </>
                             )}
                         </div>
                     </>
@@ -1393,6 +1629,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
                     </>
                 )}
             </main>
-        </>
+            </div>
+        </div>
     );
 }
