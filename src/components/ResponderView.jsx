@@ -1,4 +1,5 @@
 import React from 'react';
+import ToggleSwitch from './ToggleSwitch';
 
 export default function ResponderView({
     targetJid, setTargetJid,
@@ -62,23 +63,11 @@ export default function ResponderView({
                         </div>
                     </details>
  
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '15px', background: 'var(--canvas-soft)', padding: '0.6rem 0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
-                        <input 
-                            type="checkbox" 
-                            id="ai-allow-business" 
-                            checked={allowBusinessKnowledge} 
-                            onChange={(e) => setAllowBusinessKnowledge(e.target.checked)} 
-                            style={{ 
-                                accentColor: 'var(--primary)', 
-                                cursor: 'pointer', 
-                                width: '15px', 
-                                height: '15px', 
-                                margin: 0 
-                            }} 
-                        />
-                        <label htmlFor="ai-allow-business" style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text)', cursor: 'pointer', margin: 0, userSelect: 'none' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '15px', background: 'var(--canvas-soft)', padding: '0.6rem 0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
+                        <ToggleSwitch checked={allowBusinessKnowledge} onChange={setAllowBusinessKnowledge} />
+                        <span style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text)', userSelect: 'none' }}>
                             Allow access to Business FAQ Spreadsheet
-                        </label>
+                        </span>
                     </div>
 
                     <button type="button" onClick={handleAddContactConfig} className="btn-primary" style={{ marginTop: '15px' }}>Add / Update Contact Config</button>
