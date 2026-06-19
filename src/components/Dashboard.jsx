@@ -5,6 +5,7 @@ import StatusLogsView from './StatusLogsView';
 import ResponderView from './ResponderView';
 import BusinessView from './BusinessView';
 import SettingsView from './SettingsView';
+import InboxView from './InboxView';
 
 export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
     const [user, setUser] = useState(null);
@@ -481,13 +482,31 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
             <div style={{ flex: 1, height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 <main className="container" style={{
                     display: 'grid',
-                    gridTemplateColumns: activeView === 'settings' ? '1.2fr 1fr' : activeView === 'business' ? '1fr 1.5fr' : '1fr 1fr',
+                    gridTemplateColumns: activeView === 'inbox' ? '1fr' : activeView === 'settings' ? '1.2fr 1fr' : activeView === 'business' ? '1fr 1.5fr' : '1fr 1fr',
                     height: '100%', width: '100%', maxWidth: '100%',
                     padding: '1.5rem', gap: '1.5rem', margin: 0,
                     overflowY: 'hidden', boxSizing: 'border-box'
                 }}>
                     {activeView === 'chat' && (
                         <StatusLogsView botStatus={botStatus} qrCode={qrCode} handleDisconnectBot={handleDisconnectBot} logs={logs} />
+                    )}
+
+                    {activeView === 'inbox' && (
+                        <InboxView
+                            recentChats={recentChats}
+                            activeChatJid={activeChatJid}
+                            setActiveChatJid={setActiveChatJid}
+                            activeChatMessages={activeChatMessages}
+                            chatHistoryEndRef={chatHistoryEndRef}
+                            replyText={replyText}
+                            setReplyText={setReplyText}
+                            handleSendQuickReply={handleSendQuickReply}
+                            openDropdownJid={openDropdownJid}
+                            setOpenDropdownJid={setOpenDropdownJid}
+                            handleDeleteChat={handleDeleteChat}
+                            setTargetJid={setTargetJid}
+                            setActiveView={setActiveView}
+                        />
                     )}
 
                     {activeView === 'responder' && (
@@ -500,10 +519,8 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
                             allowBusinessKnowledge={allowBusinessKnowledge} setAllowBusinessKnowledge={setAllowBusinessKnowledge}
                             handleAddContactConfig={handleAddContactConfig}
                             aiContacts={aiContacts} handleEditConfig={handleEditConfig} handleRemoveContactConfig={handleRemoveContactConfig}
-                            activeChatJid={activeChatJid} setActiveChatJid={setActiveChatJid}
-                            activeChatMessages={activeChatMessages} chatHistoryEndRef={chatHistoryEndRef}
-                            replyText={replyText} setReplyText={setReplyText} handleSendQuickReply={handleSendQuickReply}
-                            recentChats={recentChats} openDropdownJid={openDropdownJid} setOpenDropdownJid={setOpenDropdownJid} handleDeleteChat={handleDeleteChat}
+                            setActiveChatJid={setActiveChatJid}
+                            setActiveView={setActiveView}
                         />
                     )}
 
