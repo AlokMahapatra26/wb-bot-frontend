@@ -6,6 +6,7 @@ import ResponderView from './ResponderView';
 import BusinessView from './BusinessView';
 import SettingsView from './SettingsView';
 import InboxView from './InboxView';
+import AboutView from './AboutView';
 
 export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
     const [user, setUser] = useState(null);
@@ -482,13 +483,17 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
             <div style={{ flex: 1, height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 <main className="container" style={{
                     display: 'grid',
-                    gridTemplateColumns: activeView === 'inbox' ? '1fr' : activeView === 'settings' ? '1.2fr 1fr' : activeView === 'business' ? '1fr 1.5fr' : '1fr 1fr',
+                    gridTemplateColumns: activeView === 'inbox' || activeView === 'about' ? '1fr' : activeView === 'settings' ? '1.2fr 1fr' : activeView === 'business' ? '1fr 1.5fr' : '1fr 1fr',
                     height: '100%', width: '100%', maxWidth: '100%',
                     padding: '1.5rem', gap: '1.5rem', margin: 0,
                     overflowY: 'hidden', boxSizing: 'border-box'
                 }}>
                     {activeView === 'chat' && (
                         <StatusLogsView botStatus={botStatus} qrCode={qrCode} handleDisconnectBot={handleDisconnectBot} logs={logs} />
+                    )}
+
+                    {activeView === 'about' && (
+                        <AboutView user={user} />
                     )}
 
                     {activeView === 'inbox' && (
