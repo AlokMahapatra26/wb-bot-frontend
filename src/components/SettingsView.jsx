@@ -35,16 +35,9 @@ export default function SettingsView({
                                 </div>
                                 <ToggleSwitch checked={individualEnabled} onChange={handleToggleIndividual} />
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'flex-start', borderTop: '1px solid var(--border)', paddingTop: '0.5rem' }}>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.7rem', color: 'var(--muted)', cursor: 'pointer' }}>
-                                    <input 
-                                        type="checkbox" 
-                                        checked={hideResponderTab} 
-                                        onChange={(e) => setHideResponderTab(e.target.checked)} 
-                                        style={{ accentColor: 'var(--primary)', cursor: 'pointer' }}
-                                    />
-                                    <span>Hide tab from sidebar</span>
-                                </label>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border)', paddingTop: '0.5rem' }}>
+                                <span style={{ fontSize: '0.72rem', color: 'var(--muted)', fontWeight: 500 }}>Hide tab from sidebar</span>
+                                <ToggleSwitch checked={hideResponderTab} onChange={setHideResponderTab} />
                             </div>
                         </div>
 
@@ -57,16 +50,9 @@ export default function SettingsView({
                                 </div>
                                 <ToggleSwitch checked={businessEnabled} onChange={handleToggleBusiness} />
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'flex-start', borderTop: '1px solid var(--border)', paddingTop: '0.5rem' }}>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.7rem', color: 'var(--muted)', cursor: 'pointer' }}>
-                                    <input 
-                                        type="checkbox" 
-                                        checked={hideBusinessTab} 
-                                        onChange={(e) => setHideBusinessTab(e.target.checked)} 
-                                        style={{ accentColor: 'var(--primary)', cursor: 'pointer' }}
-                                    />
-                                    <span>Hide tab from sidebar</span>
-                                </label>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border)', paddingTop: '0.5rem' }}>
+                                <span style={{ fontSize: '0.72rem', color: 'var(--muted)', fontWeight: 500 }}>Hide tab from sidebar</span>
+                                <ToggleSwitch checked={hideBusinessTab} onChange={setHideBusinessTab} />
                             </div>
                         </div>
                     </div>
