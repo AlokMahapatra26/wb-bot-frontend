@@ -21,9 +21,9 @@ export default function ResponderView({
                     <div className="panel-title">Manage AI Auto-Responder JIDs</div>
                     <div className="field">
                         <label htmlFor="ai-number">Target WhatsApp JID</label>
-                        <input type="text" id="ai-number" placeholder="e.g. 918849561649@s.whatsapp.net or 120363294328@g.us" value={targetJid} onChange={(e) => setTargetJid(e.target.value)} />
+                        <input type="text" id="ai-number" placeholder="e.g. 918849561649@s.whatsapp.net" value={targetJid} onChange={(e) => setTargetJid(e.target.value)} />
                         <div className="hint" style={{ fontSize: '0.68rem', color: 'var(--muted)', marginTop: '4px' }}>
-                            Enter the exact WhatsApp JID. You can click <strong>Use JID</strong> inside any active chat detail view in the Chats tab to copy it instantly here.
+                            Only the exact WhatsApp JID (e.g. <code>918849561649@s.whatsapp.net</code> or <code>120363294328@g.us</code>) will work. Open any active chat on the right and click <strong>Use JID to Configure</strong> to copy it instantly here.
                         </div>
                     </div>
                     
@@ -31,12 +31,15 @@ export default function ResponderView({
                         <label htmlFor="ai-prompt-template">Preset Talk Style</label>
                         <select id="ai-prompt-template" value={talkingStylePreset} onChange={(e) => setTalkingStylePreset(e.target.value)}>
                             <option value="">— Pick a preset template —</option>
-                            <option value="Reply in a highly sarcastic, witty, and slightly roasty tone. Use informal slang.">Sarcastic & Witty</option>
-                            <option value="Talk like a pirate! Use words like 'Ahoy', 'Matey', 'Ye', and 'Arrgh'.">Pirate Captain</option>
-                            <option value="You are a professional corporate assistant. Be extremely formal, polite, and brief.">Formal Corporate</option>
-                            <option value="Shayari style - reply poetically, combining Hindi and Urdu keywords.">Poetic Shayari</option>
-                            <option value="Use Gen-Z slang (no cap, bet, fr fr, lowkey, skibidi, rizz, gyatt). Keep it casual.">Gen-Z Slang</option>
-                            <option value="Reply purely in emojis representing the message content.">Emoji Only</option>
+                            <option value="Keep responses warm, friendly, helpful, and conversational. Use natural casual language with appropriate emojis.">Friendly & Conversational</option>
+                            <option value="Keep answers extremely brief, direct, and under two sentences. Avoid unnecessary fluff or greeting patterns.">Short & Concise (SMS Style)</option>
+                            <option value="Respond as a polite, helpful, and professional business assistant. Structure with clear bullet points if listing options.">Professional Business Support</option>
+                            <option value="Respond casually in Hinglish (a mix of Hindi and English) using Latin characters. Keep it friendly and informal.">Casual Hinglish (Mix of Hindi/English)</option>
+                            <option value="Act as a proactive sales representative. Be persuasive, offer solutions, and nudge the user toward booking a call or meeting.">Sales & Lead Nurturing</option>
+                            <option value="Be extremely patient, empathetic, and reassuring. Focus on step-by-step customer support and problem resolution.">Customer Support & Empathy</option>
+                            <option value="Be precise, detail-oriented, and objective. Focus on facts, troubleshooting steps, and technical accuracy.">Technical & Analytical Assistant</option>
+                            <option value="Reply in a highly sarcastic, witty, and slightly roasty tone. Use informal slang.">Sarcastic & Witty (Fun)</option>
+                            <option value="Use Gen-Z slang (no cap, bet, fr fr, lowkey, skibidi, rizz, gyatt). Keep it casual.">Gen-Z Slang (Fun)</option>
                         </select>
                     </div>
 
@@ -80,6 +83,28 @@ export default function ResponderView({
                                     </span>
                                 </div>
                             </div>
+                            <button
+                                type="button"
+                                onClick={() => setTargetJid(activeChatJid)}
+                                className="btn-sm btn-primary"
+                                style={{
+                                    margin: 0,
+                                    padding: '0.3rem 0.6rem',
+                                    fontSize: '0.7rem',
+                                    width: 'auto',
+                                    fontWeight: 600,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '4px',
+                                    whiteSpace: 'nowrap'
+                                }}
+                            >
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+                                </svg>
+                                Use JID to Configure
+                            </button>
                         </div>
                         
                         <div id="detail-chat-history" className="feed-box" style={{ flex: 1, overflowY: 'auto', padding: '1.2rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.85rem', background: 'var(--bg)' }}>
