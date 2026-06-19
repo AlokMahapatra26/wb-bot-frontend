@@ -22,31 +22,9 @@ export default function AboutView({ user }) {
                 flexDirection: 'column',
                 gap: '1.2rem'
             }}>
-                {/* Background decorative gradient glow */}
-                <div style={{
-                    position: 'absolute',
-                    top: '-50px',
-                    right: '-50px',
-                    width: '200px',
-                    height: '200px',
-                    background: 'radial-gradient(circle, rgba(0, 168, 132, 0.12) 0%, transparent 70%)',
-                    pointerEvents: 'none'
-                }} />
 
                 <div>
-                    <span style={{ 
-                        background: 'rgba(0, 168, 132, 0.12)', 
-                        color: 'var(--primary)', 
-                        padding: '0.2rem 0.6rem', 
-                        borderRadius: '20px', 
-                        fontSize: '0.68rem',
-                        fontWeight: 700,
-                        letterSpacing: '0.05em',
-                        textTransform: 'uppercase'
-                    }}>
-                        Stable Release v1.2.0
-                    </span>
-                    <h1 style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: '0.6rem', marginBottom: '0.25rem', color: 'var(--text)' }}>
+                    <h1 style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: 0, marginBottom: '0.25rem', color: 'var(--text)' }}>
                         WhatsApp AI Bot Creator
                     </h1>
                     <p style={{ fontSize: '0.85rem', color: 'var(--muted)', margin: 0, lineHeight: 1.5, maxWidth: '600px' }}>
@@ -101,77 +79,6 @@ export default function AboutView({ user }) {
                                 </a>
                             </div>
                         </div>
-                    </div>
-
-                    <div>
-                        <span style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--dim)', fontWeight: 700, display: 'block', marginBottom: '0.35rem' }}>
-                            ENVIRONMENT
-                        </span>
-                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text)' }}>
-                                Linux Workspace
-                            </span>
-                            <span style={{
-                                width: '6px',
-                                height: '6px',
-                                borderRadius: '50%',
-                                background: '#22c55e',
-                                display: 'inline-block'
-                            }} />
-                            <span style={{ fontSize: '0.7rem', color: 'var(--dim)', fontFamily: 'monospace' }}>
-                                /home/alok/Dev
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Features Detail Grid */}
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                gap: '1rem'
-            }}>
-                <div className="card" style={{ padding: '1.25rem', display: 'flex', gap: '0.75rem' }}>
-                    <div style={{ color: 'var(--primary)', marginTop: '2px' }}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 style={{ fontSize: '0.82rem', fontWeight: 700, margin: '0 0 0.25rem 0', color: 'var(--text)' }}>Business Autopilot</h3>
-                        <p style={{ fontSize: '0.72rem', color: 'var(--muted)', margin: 0, lineHeight: 1.4 }}>
-                            Automatically query Supabase vector database knowledge rows to answer customer queries with zero manual intervention.
-                        </p>
-                    </div>
-                </div>
-
-                <div className="card" style={{ padding: '1.25rem', display: 'flex', gap: '0.75rem' }}>
-                    <div style={{ color: 'var(--primary)', marginTop: '2px' }}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                            <circle cx="12" cy="7" r="4" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 style={{ fontSize: '0.82rem', fontWeight: 700, margin: '0 0 0.25rem 0', color: 'var(--text)' }}>Individual Responder</h3>
-                        <p style={{ fontSize: '0.72rem', color: 'var(--muted)', margin: 0, lineHeight: 1.4 }}>
-                            Isolate personal configurations, customise prompts, and conditionally allow access to the business FAQ database.
-                        </p>
-                    </div>
-                </div>
-
-                <div className="card" style={{ padding: '1.25rem', display: 'flex', gap: '0.75rem' }}>
-                    <div style={{ color: 'var(--primary)', marginTop: '2px' }}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 style={{ fontSize: '0.82rem', fontWeight: 700, margin: '0 0 0.25rem 0', color: 'var(--text)' }}>Live Chats Pane</h3>
-                        <p style={{ fontSize: '0.72rem', color: 'var(--muted)', margin: 0, lineHeight: 1.4 }}>
-                            A high-visibility dual-pane inbox separating configuration settings from real-time client conversational feeds.
-                        </p>
                     </div>
                 </div>
             </div>
