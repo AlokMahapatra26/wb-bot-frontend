@@ -13,9 +13,48 @@ export default function InboxView({
     setOpenDropdownJid,
     handleDeleteChat,
     setTargetJid,
-    setActiveView
+    setActiveView,
+    aiContacts = [],
+    businessEnabled = false,
+    businessExcludeContacts = []
 }) {
     const activeChatDetail = recentChats.find(c => c.chat_jid === activeChatJid);
+
+    const checkIsBotActive = (jid) => {
+        if (!jid) return false;
+        
+        // Check if individual responder list is globally disabled
+        const isIndividualDisabled = aiContacts.some(c => c.number === '__SYSTEM_INDIVIDUAL_RESPONDER_DISABLED__');
+        
+        let hasIndividualMatch = false;
+        if (!isIndividualDisabled) {
+            hasIndividualMatch = aiContacts.some(c => {
+                const configNum = c.number.trim().toLowerCase();
+                const remoteJid = jid.trim().toLowerCase();
+                if (configNum === remoteJid) return true;
+                
+                const cleanConfig = configNum.replace(/\D/g, '');
+                const cleanRemote = remoteJid.replace(/\D/g, '');
+                if (cleanConfig && cleanConfig.length >= 8 && cleanRemote.endsWith(cleanConfig)) {
+                    return true;
+                }
+                return false;
+            });
+        }
+        
+        if (hasIndividualMatch) return true;
+        
+        if (businessEnabled && !jid.endsWith('@g.us')) {
+            const cleanRemote = jid.replace(/\D/g, '');
+            const isExcluded = businessExcludeContacts.some(exc => {
+                const cleanExc = exc.trim().replace(/\D/g, '');
+                return cleanExc && cleanRemote.endsWith(cleanExc);
+            });
+            if (!isExcluded) return true;
+        }
+        
+        return false;
+    };
 
     return (
         <div style={{
@@ -57,9 +96,38 @@ export default function InboxView({
                                 >
                                     <div style={{ flex: 1, minWidth: 0 }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                                            <span style={{ fontWeight: 700, fontSize: '0.78rem', color: isSelected ? 'var(--primary)' : 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                {chat.sender_name || chat.chat_jid.split('@')[0]}
-                                            </span>
+                                            <div style={{ display: 'flex', alignItems: 'center', minWidth: 0, flex: 1, marginRight: '0.5rem' }}>
+                                                <span style={{ fontWeight: 700, fontSize: '0.78rem', color: isSelected ? 'var(--primary)' : 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                    {chat.sender_name || chat.chat_jid.split('@')[0]}
+                                                </span>
+                                                {checkIsBotActive(chat.chat_jid) && (
+                                                    <span 
+                                                        title="Bot Active" 
+                                                        style={{
+                                                            display: 'inline-flex',
+                                                            alignItems: 'center',
+                                                            background: 'rgba(0, 168, 132, 0.12)',
+                                                            color: 'var(--primary)',
+                                                            fontSize: '0.55rem',
+                                                            fontWeight: 700,
+                                                            padding: '1.5px 5px',
+                                                            borderRadius: '3px',
+                                                            marginLeft: '6px',
+                                                            flexShrink: 0,
+                                                            letterSpacing: '0.03em',
+                                                            border: '1px solid rgba(0, 168, 132, 0.2)'
+                                                        }}
+                                                    >
+                                                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px', flexShrink: 0 }}>
+                                                            <rect x="3" y="11" width="18" height="10" rx="2" />
+                                                            <circle cx="8" cy="16" r="1.5" fill="currentColor" />
+                                                            <circle cx="16" cy="16" r="1.5" fill="currentColor" />
+                                                            <path d="M9 20h6M12 6V2M9 2h6M12 11V8" />
+                                                        </svg>
+                                                        BOT
+                                                    </span>
+                                                )}
+                                            </div>
                                             <span style={{ fontSize: '0.58rem', color: 'var(--dim)' }}>
                                                 {new Date(chat.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                             </span>
@@ -137,9 +205,38 @@ export default function InboxView({
                                 &larr; Close
                             </button>
                             <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.25, flex: 1, minWidth: 0 }}>
-                                <span id="detail-chat-title" style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                    {activeChatDetail?.sender_name || activeChatJid.split('@')[0]}
-                                </span>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <span id="detail-chat-title" style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                        {activeChatDetail?.sender_name || activeChatJid.split('@')[0]}
+                                    </span>
+                                    {checkIsBotActive(activeChatJid) && (
+                                        <span 
+                                            title="Bot Active" 
+                                            style={{
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                background: 'rgba(0, 168, 132, 0.12)',
+                                                color: 'var(--primary)',
+                                                fontSize: '0.55rem',
+                                                fontWeight: 700,
+                                                padding: '1.5px 5px',
+                                                borderRadius: '3px',
+                                                marginLeft: '6px',
+                                                flexShrink: 0,
+                                                letterSpacing: '0.03em',
+                                                border: '1px solid rgba(0, 168, 132, 0.2)'
+                                            }}
+                                        >
+                                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px', flexShrink: 0 }}>
+                                                <rect x="3" y="11" width="18" height="10" rx="2" />
+                                                <circle cx="8" cy="16" r="1.5" fill="currentColor" />
+                                                <circle cx="16" cy="16" r="1.5" fill="currentColor" />
+                                                <path d="M9 20h6M12 6V2M9 2h6M12 11V8" />
+                                            </svg>
+                                            BOT ACTIVE
+                                        </span>
+                                    )}
+                                </div>
                                 <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', marginTop: '0.15rem' }}>
                                     <span id="detail-chat-jid" style={{ fontSize: '0.65rem', color: 'var(--dim)', fontFamily: 'monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '240px' }}>
                                         {activeChatJid}

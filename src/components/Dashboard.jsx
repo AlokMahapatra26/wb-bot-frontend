@@ -532,6 +532,9 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
                             handleDeleteChat={handleDeleteChat}
                             setTargetJid={setTargetJid}
                             setActiveView={setActiveView}
+                            aiContacts={aiContacts}
+                            businessEnabled={businessEnabled}
+                            businessExcludeContacts={businessExcludeContacts}
                         />
                     )}
 
