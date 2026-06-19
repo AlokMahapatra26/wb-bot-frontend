@@ -19,6 +19,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
     const [geminiKey, setGeminiKey] = useState('');
     const [geminiModel, setGeminiModel] = useState('gemini-2.5-flash');
     const [aiContacts, setAiContacts] = useState([]);
+    const [individualEnabled, setIndividualEnabled] = useState(true);
 
     // Conversation thread states
     const [recentChats, setRecentChats] = useState([]);
@@ -237,7 +238,12 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
             if (data) {
                 setGeminiKey(data.gemini_api_key || '');
                 setGeminiModel(data.gemini_model || 'gemini-2.5-flash');
-                setAiContacts(data.ai_contacts || []);
+                
+                const rawContacts = data.ai_contacts || [];
+                const isDisabled = rawContacts.some(c => c.number === '__SYSTEM_INDIVIDUAL_RESPONDER_DISABLED__');
+                setIndividualEnabled(!isDisabled);
+                setAiContacts(rawContacts.filter(c => c.number !== '__SYSTEM_INDIVIDUAL_RESPONDER_DISABLED__'));
+
                 setBusinessEnabled(data.business_enabled ?? false);
                 setBusinessPrompt(data.business_prompt || '');
                 setBusinessStyle(data.business_style || '');
@@ -474,6 +480,26 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
         await saveBusinessSettings(enabled, undefined, undefined, undefined);
     };
 
+    const handleToggleIndividual = async (enabled) => {
+        setIndividualEnabled(enabled);
+        try {
+            const listToSave = [...aiContacts];
+            if (!enabled) {
+                listToSave.push({ number: '__SYSTEM_INDIVIDUAL_RESPONDER_DISABLED__' });
+            }
+            const { error } = await supabase
+                .from('user_configs')
+                .update({
+                    ai_contacts: listToSave
+                })
+                .eq('user_id', user.id);
+
+            if (error) throw error;
+        } catch (err) {
+            alert('Failed to save individual responder settings: ' + err.message);
+        }
+    };
+
     const handleSaveBusinessSettings = async () => {
         await saveBusinessSettings(businessEnabled, businessPrompt, businessStyle, businessExcludeContacts);
         alert('Business Autopilot settings saved successfully!');
@@ -531,11 +557,16 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
             updatedList.push(updatedContact);
         }
 
+        const listToSave = [...updatedList];
+        if (!individualEnabled) {
+            listToSave.push({ number: '__SYSTEM_INDIVIDUAL_RESPONDER_DISABLED__' });
+        }
+
         try {
             const { error } = await supabase
                 .from('user_configs')
                 .update({
-                    ai_contacts: updatedList
+                    ai_contacts: listToSave
                 })
                 .eq('user_id', user.id);
 
@@ -559,11 +590,16 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
         if (!confirm(`Remove AI rules for JID: ${number}?`)) return;
         const updatedList = aiContacts.filter(c => c.number.trim() !== number.trim());
 
+        const listToSave = [...updatedList];
+        if (!individualEnabled) {
+            listToSave.push({ number: '__SYSTEM_INDIVIDUAL_RESPONDER_DISABLED__' });
+        }
+
         try {
             const { error } = await supabase
                 .from('user_configs')
                 .update({
-                    ai_contacts: updatedList
+                    ai_contacts: listToSave
                 })
                 .eq('user_id', user.id);
 
@@ -881,6 +917,37 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
                             </svg>
                             {!isSidebarCollapsed && <span>Business Autopilot</span>}
                         </button>
+
+                        <button 
+                            type="button" 
+                            onClick={() => { setActiveView('settings'); setActiveChatJid(null); }} 
+                            style={{ 
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: isSidebarCollapsed ? 'center' : 'flex-start',
+                                gap: isSidebarCollapsed ? '0' : '0.75rem',
+                                width: '100%',
+                                textAlign: 'left',
+                                fontSize: '0.8rem', 
+                                fontWeight: 600, 
+                                padding: isSidebarCollapsed ? '0.7rem 0' : '0.7rem 0.85rem',
+                                borderRadius: 'var(--radius-sm)',
+                                background: activeView === 'settings' ? 'var(--primary)' : 'transparent',
+                                color: activeView === 'settings' ? '#171717' : 'var(--text)',
+                                border: '1px solid',
+                                borderColor: activeView === 'settings' ? 'var(--primary)' : 'transparent',
+                                cursor: 'pointer',
+                                transition: 'all 0.15s ease'
+                            }}
+                            className={`sidebar-nav-btn ${activeView === 'settings' ? 'active' : ''}`}
+                            title={isSidebarCollapsed ? "Settings" : ""}
+                        >
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                            </svg>
+                            {!isSidebarCollapsed && <span>Settings</span>}
+                        </button>
                     </nav>
                 </div>
 
@@ -955,7 +1022,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
             <div style={{ flex: 1, height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 <main className="container" style={{ 
                     display: 'grid', 
-                    gridTemplateColumns: activeView === 'business' ? '1fr 1.5fr' : '1fr 1fr',
+                    gridTemplateColumns: activeView === 'settings' ? '1.2fr 1fr' : activeView === 'business' ? '1fr 1.5fr' : '1fr 1fr',
                     height: '100%',
                     width: '100%',
                     maxWidth: '100%',
@@ -1046,32 +1113,6 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
                                                     </ol>
                                                 </>
                                             )}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="card" id="system-settings-details">
-                                <div style={{ fontWeight: 600, borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem' }}>System & API Settings</div>
-                                <div className="details-content" style={{ marginTop: '15px' }}>
-                                    <div className="field">
-                                        <label htmlFor="gemini-key">API Key</label>
-                                        <input type="password" id="gemini-key" placeholder="Paste your API key here" value={geminiKey} onChange={(e) => setGeminiKey(e.target.value)} />
-                                    </div>
-                                    
-                                    <div className="field">
-                                        <label htmlFor="gemini-model">Model Engine</label>
-                                        <div className="row-btns" style={{ display: 'flex', gap: '0.5rem' }}>
-                                            <select id="gemini-model" value={geminiModel} onChange={(e) => setGeminiModel(e.target.value)} style={{ flex: 1 }}>
-                                                <option value="gemma-4-31b-it">gemma-4-31b-it (1500 req/day)</option>
-                                                <option value="gemma-4-26b-a4b-it">gemma-4-26b-a4b-it (1500 req/day)</option>
-                                                <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite (500 req/day)</option>
-                                                <option value="gemini-2.5-flash">gemini-2.5-flash (20 req/day)</option>
-                                                <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite (20 req/day)</option>
-                                                <option value="gemini-2.5-pro">gemini-2.5-pro (limited)</option>
-                                                <option value="gemini-1.5-flash">gemini-1.5-flash (legacy)</option>
-                                            </select>
-                                            <button type="button" onClick={saveEngineSettings} className="btn-sm btn-primary" style={{ width: 'auto' }}>Save Engine</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1700,6 +1741,222 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
                                         </div>
                                     </div>
                                 </form>
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                {activeView === 'settings' && (
+                    <>
+                        {/* COL 1: Control Center & Engine Settings */}
+                        <div className="column-left" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', overflowY: 'auto' }}>
+                            {/* Automation Control Center */}
+                            <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                                <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem' }}>
+                                    <h2 style={{ fontSize: '0.95rem', fontWeight: 700, margin: 0, color: 'var(--text)' }}>Automation Control Center</h2>
+                                    <p style={{ fontSize: '0.68rem', color: 'var(--muted)', margin: '0.15rem 0 0 0' }}>Globally enable or disable auto-responders</p>
+                                </div>
+                                
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                    {/* Individual Responder Switch */}
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--canvas-soft)', padding: '0.85rem 1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', flex: 1, paddingRight: '1rem' }}>
+                                            <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text)' }}>Individual Responder</span>
+                                            <span style={{ fontSize: '0.68rem', color: 'var(--muted)', lineHeight: '1.2' }}>Automatically respond to contacts configured in the 'Individual Responder' tab.</span>
+                                        </div>
+                                        <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', position: 'relative', flexShrink: 0 }}>
+                                            <input 
+                                                type="checkbox" 
+                                                checked={individualEnabled} 
+                                                onChange={(e) => handleToggleIndividual(e.target.checked)} 
+                                                style={{ display: 'none' }}
+                                            />
+                                            <span style={{
+                                                width: '42px',
+                                                height: '24px',
+                                                background: individualEnabled ? 'var(--primary)' : 'var(--border)',
+                                                borderRadius: '12px',
+                                                position: 'relative',
+                                                transition: 'background-color 0.2s',
+                                                display: 'inline-block'
+                                            }}>
+                                                <span style={{
+                                                    width: '18px',
+                                                    height: '18px',
+                                                    background: individualEnabled ? '#171717' : 'var(--text)',
+                                                    borderRadius: '50%',
+                                                    position: 'absolute',
+                                                    top: '3px',
+                                                    left: individualEnabled ? '21px' : '3px',
+                                                    transition: 'left 0.2s, background-color 0.2s'
+                                                }} />
+                                            </span>
+                                        </label>
+                                    </div>
+
+                                    {/* Business Autopilot Switch */}
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--canvas-soft)', padding: '0.85rem 1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', flex: 1, paddingRight: '1rem' }}>
+                                            <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text)' }}>Business Autopilot</span>
+                                            <span style={{ fontSize: '0.68rem', color: 'var(--muted)', lineHeight: '1.2' }}>Automatically respond to all other incoming chats (fallback mode).</span>
+                                        </div>
+                                        <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', position: 'relative', flexShrink: 0 }}>
+                                            <input 
+                                                type="checkbox" 
+                                                checked={businessEnabled} 
+                                                onChange={(e) => handleToggleBusiness(e.target.checked)} 
+                                                style={{ display: 'none' }}
+                                            />
+                                            <span style={{
+                                                width: '42px',
+                                                height: '24px',
+                                                background: businessEnabled ? 'var(--primary)' : 'var(--border)',
+                                                borderRadius: '12px',
+                                                position: 'relative',
+                                                transition: 'background-color 0.2s',
+                                                display: 'inline-block'
+                                            }}>
+                                                <span style={{
+                                                    width: '18px',
+                                                    height: '18px',
+                                                    background: businessEnabled ? '#171717' : 'var(--text)',
+                                                    borderRadius: '50%',
+                                                    position: 'absolute',
+                                                    top: '3px',
+                                                    left: businessEnabled ? '21px' : '3px',
+                                                    transition: 'left 0.2s, background-color 0.2s'
+                                                }} />
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Gemini Engine Settings */}
+                            <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem' }}>
+                                    <h2 style={{ fontSize: '0.95rem', fontWeight: 700, margin: 0, color: 'var(--text)' }}>Gemini Engine Settings</h2>
+                                    <p style={{ fontSize: '0.68rem', color: 'var(--muted)', margin: '0.15rem 0 0 0' }}>Configure API keys and AI engine model</p>
+                                </div>
+                                <div className="details-content" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                    <div className="field">
+                                        <label htmlFor="settings-gemini-key">API Key</label>
+                                        <input 
+                                            type="password" 
+                                            id="settings-gemini-key" 
+                                            placeholder="Paste your API key here" 
+                                            value={geminiKey} 
+                                            onChange={(e) => setGeminiKey(e.target.value)} 
+                                        />
+                                    </div>
+                                    
+                                    <div className="field">
+                                        <label htmlFor="settings-gemini-model">Model Engine</label>
+                                        <div className="row-btns" style={{ display: 'flex', gap: '0.5rem' }}>
+                                            <select 
+                                                id="settings-gemini-model" 
+                                                value={geminiModel} 
+                                                onChange={(e) => setGeminiModel(e.target.value)} 
+                                                style={{ flex: 1 }}
+                                            >
+                                                <option value="gemma-4-31b-it">gemma-4-31b-it (1500 req/day)</option>
+                                                <option value="gemma-4-26b-a4b-it">gemma-4-26b-a4b-it (1500 req/day)</option>
+                                                <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite (500 req/day)</option>
+                                                <option value="gemini-2.5-flash">gemini-2.5-flash (20 req/day)</option>
+                                                <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite (20 req/day)</option>
+                                                <option value="gemini-2.5-pro">gemini-2.5-pro (limited)</option>
+                                                <option value="gemini-1.5-flash">gemini-1.5-flash (legacy)</option>
+                                            </select>
+                                            <button 
+                                                type="button" 
+                                                onClick={saveEngineSettings} 
+                                                className="btn-sm btn-primary" 
+                                                style={{ width: 'auto', whiteSpace: 'nowrap' }}
+                                            >
+                                                Save Settings
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* COL 2: System Info & Database Stats */}
+                        <div className="column-right" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', overflowY: 'auto' }}>
+                            <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem' }}>
+                                    <h2 style={{ fontSize: '0.95rem', fontWeight: 700, margin: 0, color: 'var(--text)' }}>System Status & Statistics</h2>
+                                    <p style={{ fontSize: '0.68rem', color: 'var(--muted)', margin: '0.15rem 0 0 0' }}>Real-time service signals and data points</p>
+                                </div>
+
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', paddingBottom: '0.50rem', borderBottom: '1px solid var(--border)' }}>
+                                        <span style={{ color: 'var(--muted)' }}>WhatsApp Connection</span>
+                                        <span style={{
+                                            padding: '0.2rem 0.5rem',
+                                            borderRadius: 'var(--radius-sm)',
+                                            fontSize: '0.65rem',
+                                            fontWeight: 700,
+                                            textTransform: 'uppercase',
+                                            background: botStatus === 'connected' ? 'rgba(34, 197, 94, 0.1)' : botStatus === 'connecting' ? 'rgba(234, 179, 8, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                                            color: botStatus === 'connected' ? '#22c55e' : botStatus === 'connecting' ? '#eab308' : '#ef4444'
+                                        }}>{botStatus}</span>
+                                    </div>
+
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', paddingBottom: '0.50rem', borderBottom: '1px solid var(--border)' }}>
+                                        <span style={{ color: 'var(--muted)' }}>Supabase Database Connection</span>
+                                        <span style={{
+                                            padding: '0.2rem 0.5rem',
+                                            borderRadius: 'var(--radius-sm)',
+                                            fontSize: '0.65rem',
+                                            fontWeight: 700,
+                                            background: 'rgba(34, 197, 94, 0.1)',
+                                            color: '#22c55e'
+                                        }}>Active</span>
+                                    </div>
+
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', paddingBottom: '0.50rem', borderBottom: '1px solid var(--border)' }}>
+                                        <span style={{ color: 'var(--muted)' }}>AI Responder Mode</span>
+                                        <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text)' }}>
+                                            {individualEnabled ? 'Enabled' : 'Disabled'}
+                                        </span>
+                                    </div>
+
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', paddingBottom: '0.50rem', borderBottom: '1px solid var(--border)' }}>
+                                        <span style={{ color: 'var(--muted)' }}>Business Autopilot Mode</span>
+                                        <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text)' }}>
+                                            {businessEnabled ? 'Enabled' : 'Disabled'}
+                                        </span>
+                                    </div>
+
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', paddingBottom: '0.50rem', borderBottom: '1px solid var(--border)' }}>
+                                        <span style={{ color: 'var(--muted)' }}>Configured AI Contacts</span>
+                                        <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text)' }}>
+                                            {aiContacts.length}
+                                        </span>
+                                    </div>
+
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', paddingBottom: '0.50rem', borderBottom: '1px solid var(--border)' }}>
+                                        <span style={{ color: 'var(--muted)' }}>Exclusion Contacts</span>
+                                        <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text)' }}>
+                                            {businessExcludeContacts.length}
+                                        </span>
+                                    </div>
+
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', paddingBottom: '0.50rem', borderBottom: '1px solid var(--border)' }}>
+                                        <span style={{ color: 'var(--muted)' }}>Knowledge Base Patterns</span>
+                                        <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text)' }}>
+                                            {knowledgeRows.length} rows
+                                        </span>
+                                    </div>
+
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem' }}>
+                                        <span style={{ color: 'var(--muted)' }}>Current User Session ID</span>
+                                        <span style={{ fontSize: '0.65rem', fontFamily: 'var(--mono)', color: 'var(--text)', background: 'var(--canvas-soft)', padding: '0.1rem 0.3rem', borderRadius: '3px' }}>
+                                            {user?.id?.slice(0, 8)}...
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </>
