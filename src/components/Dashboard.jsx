@@ -435,6 +435,27 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
         } catch (err) { alert('Wipe error: ' + err.message); }
     };
 
+    const handleClearLogs = async () => {
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            const response = await fetch(`${botUrl}/api/logs/clear`, { 
+                method: 'POST', 
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'Authorization': `Bearer ${session?.access_token}` 
+                } 
+            });
+            const result = await response.json();
+            if (result.success) {
+                setLogs([]);
+            } else {
+                alert('Clear logs failed: ' + result.error);
+            }
+        } catch (err) {
+            alert('Clear logs error: ' + err.message);
+        }
+    };
+
     const handleLogout = async () => {
         if (!confirm('Log out from the dashboard?')) return;
         await supabase.auth.signOut();
@@ -489,7 +510,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
                     overflowY: 'hidden', boxSizing: 'border-box'
                 }}>
                     {activeView === 'chat' && (
-                        <StatusLogsView botStatus={botStatus} qrCode={qrCode} handleDisconnectBot={handleDisconnectBot} logs={logs} />
+                        <StatusLogsView botStatus={botStatus} qrCode={qrCode} handleDisconnectBot={handleDisconnectBot} logs={logs} handleClearLogs={handleClearLogs} />
                     )}
 
                     {activeView === 'about' && (

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function StatusLogsView({ botStatus, qrCode, handleDisconnectBot, logs }) {
+export default function StatusLogsView({ botStatus, qrCode, handleDisconnectBot, logs, handleClearLogs }) {
     return (
         <>
             {/* COL 1: Integration status */}
@@ -91,8 +91,28 @@ export default function StatusLogsView({ botStatus, qrCode, handleDisconnectBot,
             {/* COL 2: Connection Logs */}
             <div className="column-right" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                 <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
-                    <div style={{ fontWeight: 600, fontSize: '0.8rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>
-                        Connection Logs
+                    <div style={{ fontWeight: 600, fontSize: '0.8rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span>Connection Logs</span>
+                        <button 
+                            type="button" 
+                            onClick={handleClearLogs} 
+                            className="btn-sm" 
+                            style={{ 
+                                width: 'auto', 
+                                background: 'rgba(255, 255, 255, 0.05)', 
+                                color: 'var(--muted)', 
+                                border: '1px solid var(--border)', 
+                                fontWeight: 600, 
+                                padding: '0.2rem 0.55rem',
+                                fontSize: '0.65rem',
+                                cursor: 'pointer',
+                                transition: 'all 0.15s ease'
+                            }}
+                            onMouseEnter={(e) => { e.target.style.background = 'rgba(239, 68, 68, 0.1)'; e.target.style.color = '#ef4444'; e.target.style.borderColor = 'rgba(239, 68, 68, 0.2)'; }}
+                            onMouseLeave={(e) => { e.target.style.background = 'rgba(255, 255, 255, 0.05)'; e.target.style.color = 'var(--muted)'; e.target.style.borderColor = 'var(--border)'; }}
+                        >
+                            Clear Logs
+                        </button>
                     </div>
                     <div id="console-logs" className="console-box" style={{ 
                         fontSize: '0.62rem', 
