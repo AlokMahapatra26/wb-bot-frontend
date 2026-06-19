@@ -55,8 +55,8 @@ export default function StatusLogsView({ botStatus, qrCode, handleDisconnectBot,
                         </div>
 
                         {/* QR Code Stream & Instructions */}
-                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', background: 'var(--canvas-soft)', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
-                            <div id="qr-container" className="qr-box" style={{ background: 'var(--white)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '120px', height: '120px', padding: '5px', borderRadius: 'var(--radius-sm)', minHeight: 'auto', flexShrink: 0 }}>
+                        <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', background: 'var(--canvas-soft)', padding: '1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', flexWrap: 'wrap' }}>
+                            <div id="qr-container" className="qr-box" style={{ background: 'var(--white)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '220px', height: '220px', padding: '8px', borderRadius: 'var(--radius-sm)', minHeight: 'auto', flexShrink: 0 }}>
                                 {qrCode ? (
                                     <img src={qrCode} alt="WhatsApp QR Code" id="qr-image" style={{ width: '100%', height: '100%', objectFit: 'contain', maxWidth: '100%' }} />
                                 ) : (
@@ -69,7 +69,7 @@ export default function StatusLogsView({ botStatus, qrCode, handleDisconnectBot,
                                     </div>
                                 )}
                             </div>
-                            <div style={{ fontSize: '0.7rem', color: 'var(--muted)', lineHeight: '1.4' }}>
+                            <div style={{ fontSize: '0.72rem', color: 'var(--muted)', lineHeight: '1.5', flex: 1, minWidth: '150px' }}>
                                 {botStatus === 'connected' ? (
                                     "Your WhatsApp account is linked. The bot daemon is live and auto-reply rules are active."
                                 ) : (
