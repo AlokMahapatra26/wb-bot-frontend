@@ -16,7 +16,8 @@ export default function InboxView({
     setActiveView,
     aiContacts = [],
     businessEnabled = false,
-    businessExcludeContacts = []
+    businessExcludeContacts = [],
+    handleToggleIndividualBot
 }) {
     const activeChatDetail = recentChats.find(c => c.chat_jid === activeChatJid);
 
@@ -27,8 +28,10 @@ export default function InboxView({
         const isIndividualDisabled = aiContacts.some(c => c.number === '__SYSTEM_INDIVIDUAL_RESPONDER_DISABLED__');
         
         let hasIndividualMatch = false;
+        let isConfigDisabled = false;
+        
         if (!isIndividualDisabled) {
-            hasIndividualMatch = aiContacts.some(c => {
+            const matchedConfig = aiContacts.find(c => {
                 const configNum = c.number.trim().toLowerCase();
                 const remoteJid = jid.trim().toLowerCase();
                 if (configNum === remoteJid) return true;
@@ -40,9 +43,17 @@ export default function InboxView({
                 }
                 return false;
             });
+            if (matchedConfig) {
+                if (matchedConfig.disabled) {
+                    isConfigDisabled = true;
+                } else {
+                    hasIndividualMatch = true;
+                }
+            }
         }
         
         if (hasIndividualMatch) return true;
+        if (isConfigDisabled) return false;
         
         if (businessEnabled && !jid.endsWith('@g.us')) {
             const cleanRemote = jid.replace(/\D/g, '');
@@ -118,13 +129,7 @@ export default function InboxView({
                                                             border: '1px solid rgba(0, 168, 132, 0.2)'
                                                         }}
                                                     >
-                                                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px', flexShrink: 0 }}>
-                                                            <rect x="3" y="11" width="18" height="10" rx="2" />
-                                                            <circle cx="8" cy="16" r="1.5" fill="currentColor" />
-                                                            <circle cx="16" cy="16" r="1.5" fill="currentColor" />
-                                                            <path d="M9 20h6M12 6V2M9 2h6M12 11V8" />
-                                                        </svg>
-                                                        BOT
+                                                        BOT ACTIVE
                                                     </span>
                                                 )}
                                             </div>
@@ -227,12 +232,6 @@ export default function InboxView({
                                                 border: '1px solid rgba(0, 168, 132, 0.2)'
                                             }}
                                         >
-                                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px', flexShrink: 0 }}>
-                                                <rect x="3" y="11" width="18" height="10" rx="2" />
-                                                <circle cx="8" cy="16" r="1.5" fill="currentColor" />
-                                                <circle cx="16" cy="16" r="1.5" fill="currentColor" />
-                                                <path d="M9 20h6M12 6V2M9 2h6M12 11V8" />
-                                            </svg>
                                             BOT ACTIVE
                                         </span>
                                     )}
@@ -243,6 +242,41 @@ export default function InboxView({
                                     </span>
                                 </div>
                             </div>
+                            {/* Toggle Bot ON/OFF button */}
+                            <button
+                                type="button"
+                                onClick={() => handleToggleIndividualBot?.(activeChatJid)}
+                                className="btn-sm"
+                                style={{
+                                    margin: 0,
+                                    padding: '0.3rem 0.6rem',
+                                    fontSize: '0.7rem',
+                                    width: 'auto',
+                                    fontWeight: 600,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '4px',
+                                    whiteSpace: 'nowrap',
+                                    background: checkIsBotActive(activeChatJid) ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+                                    color: checkIsBotActive(activeChatJid) ? '#ef4444' : '#10b981',
+                                    border: `1px solid ${checkIsBotActive(activeChatJid) ? 'rgba(239, 68, 68, 0.25)' : 'rgba(16, 185, 129, 0.25)'}`,
+                                    marginRight: '6px'
+                                }}
+                            >
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                                    {checkIsBotActive(activeChatJid) ? (
+                                        <>
+                                            <circle cx="12" cy="12" r="10" />
+                                            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </>
+                                    )}
+                                </svg>
+                                {checkIsBotActive(activeChatJid) ? 'Turn Bot OFF' : 'Turn Bot ON'}
+                            </button>
                             <button
                                 type="button"
                                 onClick={() => {

@@ -394,6 +394,98 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
         } catch (err) { alert('Failed to remove AI JID config: ' + err.message); }
     };
 
+    const handleToggleIndividualBot = async (jid) => {
+        if (!jid) return;
+        const cleanJid = jid.trim();
+        
+        const isIndividualDisabled = aiContacts.some(c => c.number === '__SYSTEM_INDIVIDUAL_RESPONDER_DISABLED__');
+        
+        const existingConfigIndex = aiContacts.findIndex(c => {
+            const configNum = c.number.trim().toLowerCase();
+            const remoteJid = cleanJid.toLowerCase();
+            if (configNum === remoteJid) return true;
+            const cleanConfig = configNum.replace(/\D/g, '');
+            const cleanRemote = remoteJid.replace(/\D/g, '');
+            return cleanConfig && cleanConfig.length >= 8 && cleanRemote.endsWith(cleanConfig);
+        });
+        
+        const existingConfig = existingConfigIndex !== -1 ? aiContacts[existingConfigIndex] : null;
+        
+        const cleanRemote = cleanJid.replace(/\D/g, '');
+        const isExcludedFromBusiness = businessExcludeContacts.some(exc => {
+            const cleanExc = exc.trim().replace(/\D/g, '');
+            return cleanExc && cleanRemote.endsWith(cleanExc);
+        });
+        
+        const isCurrentlyActive = (existingConfig && !existingConfig.disabled) || 
+                                  (!existingConfig && businessEnabled && !cleanJid.endsWith('@g.us') && !isExcludedFromBusiness);
+
+        let updatedAiContacts = [...aiContacts];
+        let updatedExcludeContacts = [...businessExcludeContacts];
+
+        if (isCurrentlyActive) {
+            if (existingConfigIndex !== -1) {
+                updatedAiContacts[existingConfigIndex] = {
+                    ...updatedAiContacts[existingConfigIndex],
+                    disabled: true
+                };
+            } else {
+                updatedAiContacts.push({
+                    number: cleanJid,
+                    systemPrompt: '',
+                    talkingStyle: '',
+                    senderContext: '',
+                    contactContext: '',
+                    allowBusinessKnowledge: false,
+                    disabled: true
+                });
+            }
+            
+            if (businessEnabled && !cleanJid.endsWith('@g.us') && !isExcludedFromBusiness) {
+                updatedExcludeContacts.push(cleanJid);
+            }
+        } else {
+            if (existingConfigIndex !== -1) {
+                updatedAiContacts[existingConfigIndex] = {
+                    ...updatedAiContacts[existingConfigIndex],
+                    disabled: false
+                };
+            } else {
+                if (!businessEnabled || cleanJid.endsWith('@g.us')) {
+                    updatedAiContacts.push({
+                        number: cleanJid,
+                        systemPrompt: 'Keep responses warm, friendly, helpful, and conversational. Use natural casual language with appropriate emojis.',
+                        talkingStyle: 'Keep responses warm, friendly, helpful, and conversational. Use natural casual language with appropriate emojis.',
+                        senderContext: '',
+                        contactContext: '',
+                        allowBusinessKnowledge: false,
+                        disabled: false
+                    });
+                }
+            }
+            
+            updatedExcludeContacts = updatedExcludeContacts.filter(exc => {
+                const cleanExc = exc.trim().replace(/\D/g, '');
+                return !(cleanExc && cleanRemote.endsWith(cleanExc));
+            });
+        }
+
+        try {
+            const { error } = await supabase.from('user_configs').update({
+                ai_contacts: updatedAiContacts,
+                business_exclude_contacts: updatedExcludeContacts
+            }).eq('user_id', user.id);
+            
+            if (error) throw error;
+            
+            setAiContacts(updatedAiContacts);
+            setBusinessExcludeContacts(updatedExcludeContacts);
+        } catch (err) {
+            console.error('Failed to toggle individual bot status:', err);
+            alert('Failed to toggle bot status: ' + err.message);
+        }
+    };
+
     const handleEditConfig = (c) => {
         setTargetJid(c.number); setSenderContext(c.senderContext || ''); setContactContext(c.contactContext || '');
         setAllowBusinessKnowledge(!!c.allowBusinessKnowledge);
@@ -535,6 +627,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
                             aiContacts={aiContacts}
                             businessEnabled={businessEnabled}
                             businessExcludeContacts={businessExcludeContacts}
+                            handleToggleIndividualBot={handleToggleIndividualBot}
                         />
                     )}
 
