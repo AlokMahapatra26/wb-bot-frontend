@@ -50,6 +50,30 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
     const [editTrigger, setEditTrigger] = useState('');
     const [editResponse, setEditResponse] = useState('');
 
+    const [hideResponderTab, setHideResponderTab] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('hide_responder_tab') === 'true';
+        }
+        return false;
+    });
+
+    const [hideBusinessTab, setHideBusinessTab] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('hide_business_tab') === 'true';
+        }
+        return false;
+    });
+
+    const handleToggleHideResponder = (val) => {
+        setHideResponderTab(val);
+        localStorage.setItem('hide_responder_tab', String(val));
+    };
+
+    const handleToggleHideBusiness = (val) => {
+        setHideBusinessTab(val);
+        localStorage.setItem('hide_business_tab', String(val));
+    };
+
     const activeChatJidRef = useRef(null);
     const chatHistoryEndRef = useRef(null);
     const supabaseRef = useRef(null);
@@ -432,12 +456,14 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
                 .sidebar-nav-btn:active { transform: scale(0.98); }
             `}} />
 
-            <Sidebar
+             <Sidebar
                 activeView={activeView} setActiveView={setActiveView}
                 setActiveChatJid={setActiveChatJid}
                 isSidebarCollapsed={isSidebarCollapsed} setIsSidebarCollapsed={setIsSidebarCollapsed}
                 theme={theme} toggleTheme={toggleTheme}
                 handleLogout={handleLogout}
+                hideResponderTab={hideResponderTab}
+                hideBusinessTab={hideBusinessTab}
             />
 
             <div style={{ flex: 1, height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -493,6 +519,8 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
                             saveEngineSettings={saveEngineSettings}
                             botStatus={botStatus} user={user}
                             aiContacts={aiContacts} businessExcludeContacts={businessExcludeContacts} knowledgeRows={knowledgeRows}
+                            hideResponderTab={hideResponderTab} setHideResponderTab={handleToggleHideResponder}
+                            hideBusinessTab={hideBusinessTab} setHideBusinessTab={handleToggleHideBusiness}
                         />
                     )}
                 </main>

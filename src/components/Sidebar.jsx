@@ -44,7 +44,7 @@ const NAV_ITEMS = [
     }
 ];
 
-export default function Sidebar({ activeView, setActiveView, setActiveChatJid, isSidebarCollapsed, setIsSidebarCollapsed, theme, toggleTheme, handleLogout }) {
+export default function Sidebar({ activeView, setActiveView, setActiveChatJid, isSidebarCollapsed, setIsSidebarCollapsed, theme, toggleTheme, handleLogout, hideResponderTab, hideBusinessTab }) {
     const navBtnStyle = (key) => ({
         display: 'flex',
         alignItems: 'center',
@@ -128,7 +128,11 @@ export default function Sidebar({ activeView, setActiveView, setActiveChatJid, i
 
                 {/* Navigation Menu */}
                 <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', width: '100%' }}>
-                    {NAV_ITEMS.map(item => (
+                    {NAV_ITEMS.filter(item => {
+                        if (item.key === 'responder' && hideResponderTab) return false;
+                        if (item.key === 'business' && hideBusinessTab) return false;
+                        return true;
+                    }).map(item => (
                         <button 
                             key={item.key}
                             type="button" 

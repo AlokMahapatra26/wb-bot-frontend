@@ -8,7 +8,9 @@ export default function SettingsView({
     geminiModel, setGeminiModel,
     saveEngineSettings,
     botStatus, user,
-    aiContacts, businessExcludeContacts, knowledgeRows
+    aiContacts, businessExcludeContacts, knowledgeRows,
+    hideResponderTab, setHideResponderTab,
+    hideBusinessTab, setHideBusinessTab
 }) {
     const [showApiKey, setShowApiKey] = useState(false);
 
@@ -25,21 +27,47 @@ export default function SettingsView({
                     
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         {/* Individual Responder Switch */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--canvas-soft)', padding: '0.85rem 1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', flex: 1, paddingRight: '1rem' }}>
-                                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text)' }}>Individual Responder</span>
-                                <span style={{ fontSize: '0.68rem', color: 'var(--muted)', lineHeight: '1.2' }}>Automatically respond to contacts configured in the 'Individual Responder' tab.</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', background: 'var(--canvas-soft)', padding: '0.85rem 1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', flex: 1, paddingRight: '1rem' }}>
+                                    <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text)' }}>Individual Responder</span>
+                                    <span style={{ fontSize: '0.68rem', color: 'var(--muted)', lineHeight: '1.2' }}>Automatically respond to contacts configured in the 'Individual Responder' tab.</span>
+                                </div>
+                                <ToggleSwitch checked={individualEnabled} onChange={handleToggleIndividual} />
                             </div>
-                            <ToggleSwitch checked={individualEnabled} onChange={handleToggleIndividual} />
+                            <div style={{ display: 'flex', justifyContent: 'flex-start', borderTop: '1px solid var(--border)', paddingTop: '0.5rem' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.7rem', color: 'var(--muted)', cursor: 'pointer' }}>
+                                    <input 
+                                        type="checkbox" 
+                                        checked={hideResponderTab} 
+                                        onChange={(e) => setHideResponderTab(e.target.checked)} 
+                                        style={{ accentColor: 'var(--primary)', cursor: 'pointer' }}
+                                    />
+                                    <span>Hide tab from sidebar</span>
+                                </label>
+                            </div>
                         </div>
 
                         {/* Business Autopilot Switch */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--canvas-soft)', padding: '0.85rem 1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', flex: 1, paddingRight: '1rem' }}>
-                                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text)' }}>Business Autopilot</span>
-                                <span style={{ fontSize: '0.68rem', color: 'var(--muted)', lineHeight: '1.2' }}>Automatically respond to all other incoming chats (fallback mode).</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', background: 'var(--canvas-soft)', padding: '0.85rem 1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', flex: 1, paddingRight: '1rem' }}>
+                                    <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text)' }}>Business Autopilot</span>
+                                    <span style={{ fontSize: '0.68rem', color: 'var(--muted)', lineHeight: '1.2' }}>Automatically respond to all other incoming chats (fallback mode).</span>
+                                </div>
+                                <ToggleSwitch checked={businessEnabled} onChange={handleToggleBusiness} />
                             </div>
-                            <ToggleSwitch checked={businessEnabled} onChange={handleToggleBusiness} />
+                            <div style={{ display: 'flex', justifyContent: 'flex-start', borderTop: '1px solid var(--border)', paddingTop: '0.5rem' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.7rem', color: 'var(--muted)', cursor: 'pointer' }}>
+                                    <input 
+                                        type="checkbox" 
+                                        checked={hideBusinessTab} 
+                                        onChange={(e) => setHideBusinessTab(e.target.checked)} 
+                                        style={{ accentColor: 'var(--primary)', cursor: 'pointer' }}
+                                    />
+                                    <span>Hide tab from sidebar</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
