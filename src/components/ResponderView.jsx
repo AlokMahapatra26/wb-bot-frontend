@@ -6,6 +6,7 @@ export default function ResponderView({
     customTalkStyle, setCustomTalkStyle,
     senderContext, setSenderContext,
     contactContext, setContactContext,
+    allowBusinessKnowledge, setAllowBusinessKnowledge,
     handleAddContactConfig,
     aiContacts, handleEditConfig, handleRemoveContactConfig,
     activeChatJid, setActiveChatJid,
@@ -60,6 +61,25 @@ export default function ResponderView({
                             </div>
                         </div>
                     </details>
+ 
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '15px', background: 'var(--canvas-soft)', padding: '0.6rem 0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
+                        <input 
+                            type="checkbox" 
+                            id="ai-allow-business" 
+                            checked={allowBusinessKnowledge} 
+                            onChange={(e) => setAllowBusinessKnowledge(e.target.checked)} 
+                            style={{ 
+                                accentColor: 'var(--primary)', 
+                                cursor: 'pointer', 
+                                width: '15px', 
+                                height: '15px', 
+                                margin: 0 
+                            }} 
+                        />
+                        <label htmlFor="ai-allow-business" style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text)', cursor: 'pointer', margin: 0, userSelect: 'none' }}>
+                            Allow access to Business FAQ Spreadsheet
+                        </label>
+                    </div>
 
                     <button type="button" onClick={handleAddContactConfig} className="btn-primary" style={{ marginTop: '15px' }}>Add / Update Contact Config</button>
                 </div>
@@ -140,7 +160,26 @@ export default function ResponderView({
                                     aiContacts.map((c, i) => (
                                         <div key={i} className="ai-contact-row" onClick={() => handleEditConfig(c)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }} title="Click to edit configuration">
                                             <div className="contact-info" style={{ flex: 1 }}>
-                                                <span className="contact-number" style={{ fontWeight: 600 }}>{c.number}</span>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+                                                    <span className="contact-number" style={{ fontWeight: 600 }}>{c.number}</span>
+                                                    {c.allowBusinessKnowledge && (
+                                                        <span style={{ 
+                                                            fontSize: '0.58rem', 
+                                                            fontWeight: 700, 
+                                                            background: 'rgba(217, 119, 6, 0.12)', 
+                                                            color: '#eab308', 
+                                                            padding: '0.08rem 0.3rem', 
+                                                            borderRadius: '4px',
+                                                            border: '1px solid rgba(234, 179, 8, 0.25)',
+                                                            textTransform: 'uppercase',
+                                                            letterSpacing: '0.02em',
+                                                            display: 'inline-flex',
+                                                            alignItems: 'center'
+                                                        }}>
+                                                            FAQ Enabled
+                                                        </span>
+                                                    )}
+                                                </div>
                                                 <span className="contact-prompt" style={{ fontSize: '0.7rem', display: 'block', opacity: 0.85 }}>{c.systemPrompt || 'Default AI text style'}</span>
                                                 {c.senderContext && (
                                                     <span className="contact-prompt" style={{ fontSize: '0.65rem', display: 'flex', alignItems: 'center', gap: '4px', opacity: 0.75, marginTop: '2px' }}>

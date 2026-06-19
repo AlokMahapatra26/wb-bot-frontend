@@ -33,6 +33,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
     const [customTalkStyle, setCustomTalkStyle] = useState('');
     const [senderContext, setSenderContext] = useState('');
     const [contactContext, setContactContext] = useState('');
+    const [allowBusinessKnowledge, setAllowBusinessKnowledge] = useState(false);
 
     const [theme, setTheme] = useState('dark');
     const [activeView, setActiveView] = useState('chat');
@@ -358,7 +359,14 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
     const handleAddContactConfig = async () => {
         if (!targetJid.trim()) { alert('Please specify a JID first!'); return; }
         const systemPrompt = talkingStylePreset ? talkingStylePreset : customTalkStyle;
-        const updatedContact = { number: targetJid.trim(), systemPrompt: systemPrompt.trim(), talkingStyle: systemPrompt.trim(), senderContext: senderContext.trim(), contactContext: contactContext.trim() };
+        const updatedContact = { 
+            number: targetJid.trim(), 
+            systemPrompt: systemPrompt.trim(), 
+            talkingStyle: systemPrompt.trim(), 
+            senderContext: senderContext.trim(), 
+            contactContext: contactContext.trim(),
+            allowBusinessKnowledge: !!allowBusinessKnowledge
+        };
         const updatedList = [...aiContacts];
         const idx = updatedList.findIndex(c => c.number.trim().toLowerCase() === targetJid.trim().toLowerCase());
         if (idx !== -1) updatedList[idx] = updatedContact; else updatedList.push(updatedContact);
@@ -367,7 +375,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
         try {
             const { error } = await supabase.from('user_configs').update({ ai_contacts: listToSave }).eq('user_id', user.id);
             if (error) throw error;
-            setAiContacts(updatedList); setTargetJid(''); setTalkingStylePreset(''); setCustomTalkStyle(''); setSenderContext(''); setContactContext('');
+            setAiContacts(updatedList); setTargetJid(''); setTalkingStylePreset(''); setCustomTalkStyle(''); setSenderContext(''); setContactContext(''); setAllowBusinessKnowledge(false);
             alert('AI configuration saved!');
         } catch (err) { alert('Failed to save configuration: ' + err.message); }
     };
@@ -386,13 +394,17 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
 
     const handleEditConfig = (c) => {
         setTargetJid(c.number); setSenderContext(c.senderContext || ''); setContactContext(c.contactContext || '');
+        setAllowBusinessKnowledge(!!c.allowBusinessKnowledge);
         const presets = [
+            "Keep responses warm, friendly, helpful, and conversational. Use natural casual language with appropriate emojis.",
+            "Keep answers extremely brief, direct, and under two sentences. Avoid unnecessary fluff or greeting patterns.",
+            "Respond as a polite, helpful, and professional business assistant. Structure with clear bullet points if listing options.",
+            "Respond casually in Hinglish (a mix of Hindi and English) using Latin characters. Keep it friendly and informal.",
+            "Act as a proactive sales representative. Be persuasive, offer solutions, and nudge the user toward booking a call or meeting.",
+            "Be extremely patient, empathetic, and reassuring. Focus on step-by-step customer support and problem resolution.",
+            "Be precise, detail-oriented, and objective. Focus on facts, troubleshooting steps, and technical accuracy.",
             "Reply in a highly sarcastic, witty, and slightly roasty tone. Use informal slang.",
-            "Talk like a pirate! Use words like 'Ahoy', 'Matey', 'Ye', and 'Arrgh'.",
-            "You are a professional corporate assistant. Be extremely formal, polite, and brief.",
-            "Shayari style - reply poetically, combining Hindi and Urdu keywords.",
-            "Use Gen-Z slang (no cap, bet, fr fr, lowkey, skibidi, rizz, gyatt). Keep it casual.",
-            "Reply purely in emojis representing the message content."
+            "Use Gen-Z slang (no cap, bet, fr fr, lowkey, skibidi, rizz, gyatt). Keep it casual."
         ];
         if (presets.includes(c.systemPrompt)) { setTalkingStylePreset(c.systemPrompt); setCustomTalkStyle(''); }
         else { setTalkingStylePreset(''); setCustomTalkStyle(c.systemPrompt || ''); }
@@ -485,6 +497,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
                             customTalkStyle={customTalkStyle} setCustomTalkStyle={setCustomTalkStyle}
                             senderContext={senderContext} setSenderContext={setSenderContext}
                             contactContext={contactContext} setContactContext={setContactContext}
+                            allowBusinessKnowledge={allowBusinessKnowledge} setAllowBusinessKnowledge={setAllowBusinessKnowledge}
                             handleAddContactConfig={handleAddContactConfig}
                             aiContacts={aiContacts} handleEditConfig={handleEditConfig} handleRemoveContactConfig={handleRemoveContactConfig}
                             activeChatJid={activeChatJid} setActiveChatJid={setActiveChatJid}
