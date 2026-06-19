@@ -35,6 +35,15 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
     // Theme state
     const [theme, setTheme] = useState('dark');
 
+    // Knowledge Base view and editing states
+    const [activeView, setActiveView] = useState('chat'); // 'chat' or 'knowledge'
+    const [knowledgeRows, setKnowledgeRows] = useState([]);
+    const [newTrigger, setNewTrigger] = useState('');
+    const [newResponse, setNewResponse] = useState('');
+    const [editingRowId, setEditingRowId] = useState(null);
+    const [editTrigger, setEditTrigger] = useState('');
+    const [editResponse, setEditResponse] = useState('');
+
     // References for subscription synchronization and chat scrolling
     const activeChatJidRef = useRef(null);
     const chatHistoryEndRef = useRef(null);
@@ -66,6 +75,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
                 setUser(session.user);
                 loadConfig(session.user.id);
                 fetchRecentConversations(session.user.id);
+                loadKnowledge(session.user.id);
             } else {
                 window.location.href = '/';
             }
@@ -221,6 +231,108 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
             }
         } catch (err) {
             console.error('Error loading config:', err);
+        }
+    };
+
+    // Fetch knowledge base rows
+    const loadKnowledge = async (userId = user?.id) => {
+        if (!userId) return;
+        try {
+            const { data, error } = await supabase
+                .from('bot_knowledge')
+                .select('*')
+                .eq('user_id', userId)
+                .order('created_at', { ascending: true });
+
+            if (error) throw error;
+            setKnowledgeRows(data || []);
+        } catch (err) {
+            console.error('Error loading knowledge:', err);
+        }
+    };
+
+    // Add new knowledge base row
+    const handleAddKnowledge = async (e) => {
+        e.preventDefault();
+        if (!newTrigger.trim() || !newResponse.trim()) {
+            alert('Please specify both the trigger and the response.');
+            return;
+        }
+
+        try {
+            const { data, error } = await supabase
+                .from('bot_knowledge')
+                .insert({
+                    user_id: user.id,
+                    trigger_pattern: newTrigger.trim(),
+                    response_text: newResponse.trim()
+                })
+                .select();
+
+            if (error) throw error;
+            
+            if (data && data[0]) {
+                setKnowledgeRows(prev => [...prev, data[0]]);
+            } else {
+                loadKnowledge(user.id);
+            }
+            setNewTrigger('');
+            setNewResponse('');
+        } catch (err) {
+            alert('Failed to add knowledge: ' + err.message);
+        }
+    };
+
+    // Delete knowledge base row
+    const handleDeleteKnowledge = async (id) => {
+        if (!confirm('Are you sure you want to delete this knowledge row?')) return;
+        try {
+            const { error } = await supabase
+                .from('bot_knowledge')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+            setKnowledgeRows(prev => prev.filter(row => row.id !== id));
+        } catch (err) {
+            alert('Failed to delete knowledge: ' + err.message);
+        }
+    };
+
+    // Set row in edit mode
+    const startEditKnowledge = (row) => {
+        setEditingRowId(row.id);
+        setEditTrigger(row.trigger_pattern);
+        setEditResponse(row.response_text);
+    };
+
+    // Save edited knowledge row
+    const handleUpdateKnowledge = async (id) => {
+        if (!editTrigger.trim() || !editResponse.trim()) {
+            alert('Trigger and Response cannot be empty.');
+            return;
+        }
+
+        try {
+            const { error } = await supabase
+                .from('bot_knowledge')
+                .update({
+                    trigger_pattern: editTrigger.trim(),
+                    response_text: editResponse.trim()
+                })
+                .eq('id', id);
+
+            if (error) throw error;
+
+            setKnowledgeRows(prev => prev.map(row => {
+                if (row.id === id) {
+                    return { ...row, trigger_pattern: editTrigger.trim(), response_text: editResponse.trim() };
+                }
+                return row;
+            }));
+            setEditingRowId(null);
+        } catch (err) {
+            alert('Failed to update knowledge: ' + err.message);
         }
     };
 
@@ -515,20 +627,56 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
             <header className="header">
                 <span className="logo">Whatsapp AI Bot <span>Creator</span></span>
                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                    <button 
+                        type="button" 
+                        onClick={() => setActiveView('chat')} 
+                        className="btn-sm" 
+                        style={{ 
+                            width: 'auto', 
+                            fontSize: '0.75rem', 
+                            fontWeight: 600, 
+                            padding: '0.35rem 0.65rem',
+                            background: activeView === 'chat' ? 'var(--primary)' : 'var(--white)',
+                            color: activeView === 'chat' ? '#171717' : 'var(--text)',
+                            borderColor: activeView === 'chat' ? 'var(--primary)' : 'var(--border-dark)'
+                        }}
+                    >
+                        Chats & Settings
+                    </button>
+                    <button 
+                        type="button" 
+                        onClick={() => setActiveView('knowledge')} 
+                        className="btn-sm" 
+                        style={{ 
+                            width: 'auto', 
+                            fontSize: '0.75rem', 
+                            fontWeight: 600, 
+                            padding: '0.35rem 0.65rem',
+                            background: activeView === 'knowledge' ? 'var(--primary)' : 'var(--white)',
+                            color: activeView === 'knowledge' ? '#171717' : 'var(--text)',
+                            borderColor: activeView === 'knowledge' ? 'var(--primary)' : 'var(--border-dark)'
+                        }}
+                    >
+                        Business Knowledge Base
+                    </button>
+                    
+                    <span style={{ width: '1px', height: '16px', background: 'var(--border)', margin: '0 0.25rem' }}></span>
+
                     <button type="button" onClick={toggleTheme} className="btn-sm" style={{ width: 'auto', fontSize: '0.75rem', fontWeight: 600, padding: '0.35rem 0.65rem' }}>
                         {theme === 'dark' ? 'Light' : 'Dark'}
                     </button>
                     
-
                     <button type="button" onClick={handleLogout} className="btn-sm" style={{ width: 'auto', fontSize: '0.75rem', fontWeight: 600, padding: '0.35rem 0.65rem', background: '#ef4444', color: '#fff', borderColor: '#ef4444' }}>
                         Logout
                     </button>
                 </div>
             </header>
 
-            <main className="container">
-                {/* COL 1: AI Config settings */}
-                <div className="column-left">
+            <main className="container" style={{ display: activeView === 'knowledge' ? 'block' : 'grid', gridTemplateColumns: activeView === 'knowledge' ? 'none' : '1fr 1fr' }}>
+                {activeView === 'chat' ? (
+                    <>
+                        {/* COL 1: AI Config settings */}
+                        <div className="column-left">
                     {/* Collapsible WhatsApp Connection Status Panel */}
                     <details 
                         className="card" 
@@ -900,6 +1048,191 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
                     </div>
 
                 </div>
+                    </>
+                ) : (
+                    /* FULL WIDTH: Business Knowledge Base spreadsheet UI */
+                    <div style={{ padding: '2rem', height: '100%', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                        <div className="card" style={{ flex: 1, padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                            <div>
+                                <h2 style={{ fontSize: '1.15rem', fontWeight: 700, letterSpacing: '-0.3px', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <span>Business Knowledge Base</span>
+                                    <span style={{ 
+                                        fontSize: '0.68rem', 
+                                        fontWeight: 600, 
+                                        background: 'rgba(62, 207, 142, 0.15)', 
+                                        color: 'var(--primary)', 
+                                        padding: '0.15rem 0.45rem', 
+                                        borderRadius: '4px' 
+                                    }}>
+                                        Spreadsheet UI
+                                    </span>
+                                </h2>
+                                <p style={{ fontSize: '0.78rem', color: 'var(--muted)', marginTop: '0.35rem' }}>
+                                    Define customer queries/keywords and how the bot should reply. Updates are live in real-time.
+                                </p>
+                            </div>
+
+                            {/* Spreadsheet Table Container */}
+                            <div style={{ 
+                                overflowX: 'auto', 
+                                border: '1px solid var(--border)', 
+                                borderRadius: 'var(--radius-md)',
+                                background: 'var(--canvas-soft)'
+                            }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem', textAlign: 'left' }}>
+                                    <thead>
+                                        <tr style={{ background: 'var(--white)', borderBottom: '1px solid var(--border)' }}>
+                                            <th style={{ padding: '0.75rem 1rem', color: 'var(--muted)', fontWeight: 600, width: '60px' }}>No.</th>
+                                            <th style={{ padding: '0.75rem 1rem', color: 'var(--muted)', fontWeight: 600, width: '30%' }}>Trigger Keyword / Customer Question</th>
+                                            <th style={{ padding: '0.75rem 1rem', color: 'var(--muted)', fontWeight: 600 }}>Bot Response / Answer</th>
+                                            <th style={{ padding: '0.75rem 1rem', color: 'var(--muted)', fontWeight: 600, width: '140px', textAlign: 'center' }}>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {knowledgeRows.length === 0 ? (
+                                            <tr>
+                                                <td colSpan="4" style={{ padding: '2rem', textAlign: 'center', color: 'var(--dim)', background: 'var(--white)' }}>
+                                                    Your business knowledge base is empty. Add your first QA pair below.
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            knowledgeRows.map((row, index) => {
+                                                const isEditing = editingRowId === row.id;
+                                                return (
+                                                    <tr key={row.id} className="knowledge-row" style={{ 
+                                                        background: 'var(--white)', 
+                                                        borderBottom: '1px solid var(--border)',
+                                                        transition: 'background-color 0.15s ease'
+                                                    }}>
+                                                        <td style={{ padding: '0.85rem 1rem', color: 'var(--dim)', fontWeight: 500 }}>{index + 1}</td>
+                                                        <td style={{ padding: '0.85rem 1rem', verticalAlign: 'middle' }}>
+                                                            {isEditing ? (
+                                                                <input 
+                                                                    type="text" 
+                                                                    value={editTrigger} 
+                                                                    onChange={(e) => setEditTrigger(e.target.value)} 
+                                                                    style={{ padding: '0.35rem 0.6rem', fontSize: '0.8rem', margin: 0 }}
+                                                                />
+                                                            ) : (
+                                                                <span style={{ fontWeight: 600, color: 'var(--text)' }}>{row.trigger_pattern}</span>
+                                                            )}
+                                                        </td>
+                                                        <td style={{ padding: '0.85rem 1rem', verticalAlign: 'middle' }}>
+                                                            {isEditing ? (
+                                                                <textarea 
+                                                                    value={editResponse} 
+                                                                    onChange={(e) => setEditResponse(e.target.value)} 
+                                                                    rows={1}
+                                                                    style={{ padding: '0.35rem 0.6rem', fontSize: '0.8rem', margin: 0, resize: 'vertical' }}
+                                                                />
+                                                            ) : (
+                                                                <span style={{ color: 'var(--muted)', whiteSpace: 'pre-wrap' }}>{row.response_text}</span>
+                                                            )}
+                                                        </td>
+                                                        <td style={{ padding: '0.85rem 1rem', textAlign: 'center', verticalAlign: 'middle' }}>
+                                                            {isEditing ? (
+                                                                <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'center' }}>
+                                                                    <button 
+                                                                        type="button" 
+                                                                        onClick={() => handleUpdateKnowledge(row.id)} 
+                                                                        className="btn-sm btn-primary"
+                                                                        style={{ padding: '0.25rem 0.5rem', fontSize: '0.7rem' }}
+                                                                    >
+                                                                        Save
+                                                                    </button>
+                                                                    <button 
+                                                                        type="button" 
+                                                                        onClick={() => setEditingRowId(null)} 
+                                                                        className="btn-sm"
+                                                                        style={{ padding: '0.25rem 0.5rem', fontSize: '0.7rem' }}
+                                                                    >
+                                                                        Cancel
+                                                                    </button>
+                                                                </div>
+                                                            ) : (
+                                                                <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'center' }}>
+                                                                    <button 
+                                                                        type="button" 
+                                                                        onClick={() => startEditKnowledge(row)} 
+                                                                        className="btn-sm"
+                                                                        style={{ padding: '0.25rem 0.5rem', fontSize: '0.7rem' }}
+                                                                    >
+                                                                        Edit
+                                                                    </button>
+                                                                    <button 
+                                                                        type="button" 
+                                                                        onClick={() => handleDeleteKnowledge(row.id)} 
+                                                                        className="btn-sm"
+                                                                        style={{ 
+                                                                            padding: '0.25rem 0.5rem', 
+                                                                            fontSize: '0.7rem', 
+                                                                            color: '#ef4444', 
+                                                                            borderColor: 'rgba(239, 68, 68, 0.2)',
+                                                                            background: 'rgba(239, 68, 68, 0.05)'
+                                                                        }}
+                                                                    >
+                                                                        Delete
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Add New Knowledge Row Section */}
+                            <form onSubmit={handleAddKnowledge} className="card" style={{ 
+                                background: 'var(--canvas-soft)', 
+                                border: '1px solid var(--border)',
+                                borderRadius: 'var(--radius-md)',
+                                padding: '1.25rem',
+                                marginTop: '0.5rem'
+                            }}>
+                                <div style={{ fontWeight: 600, fontSize: '0.78rem', marginBottom: '0.75rem', color: 'var(--text)' }}>
+                                    Add New Knowledge Row
+                                </div>
+                                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                                    <div style={{ flex: '1', minWidth: '220px' }}>
+                                        <label htmlFor="kb-new-trigger" style={{ fontSize: '0.72rem' }}>Trigger Pattern / Customer Question</label>
+                                        <input 
+                                            type="text" 
+                                            id="kb-new-trigger" 
+                                            placeholder="e.g. price list, delivery info, address" 
+                                            value={newTrigger} 
+                                            onChange={(e) => setNewTrigger(e.target.value)} 
+                                            required
+                                        />
+                                    </div>
+                                    <div style={{ flex: '2', minWidth: '300px' }}>
+                                        <label htmlFor="kb-new-response" style={{ fontSize: '0.72rem' }}>Bot Response Text</label>
+                                        <textarea 
+                                            id="kb-new-response" 
+                                            rows={1}
+                                            placeholder="Enter the corresponding answer details here..." 
+                                            value={newResponse} 
+                                            onChange={(e) => setNewResponse(e.target.value)} 
+                                            required
+                                            style={{ minHeight: '38px', resize: 'vertical' }}
+                                        />
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'flex-end', minWidth: '120px' }}>
+                                        <button 
+                                            type="submit" 
+                                            className="btn-primary" 
+                                            style={{ height: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                        >
+                                            + Add Row
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
             </main>
         </>
     );
