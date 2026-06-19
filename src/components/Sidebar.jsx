@@ -253,7 +253,7 @@ export default function Sidebar({ activeView, setActiveView, setActiveChatJid, i
                                     fontWeight: 600
                                 }}
                             >
-                                @alok
+                                @AlokMahapatra26
                             </span>
                         </div>
                     </div>
