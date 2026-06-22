@@ -1127,3 +1127,45 @@ html:has(body.landing-page) {
 
 
 
+
+
+/* ── REACT-SPREADSHEET OVERRIDES ── */
+.sheet-wrapper .Spreadsheet {
+    --background-color: var(--white);
+    --border-color: var(--border);
+    width: 100%;
+}
+.sheet-wrapper .Spreadsheet table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.sheet-wrapper .Spreadsheet__header {
+    background: var(--canvas-soft) !important;
+    color: var(--dim) !important;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border: 1px solid var(--border) !important;
+}
+.sheet-wrapper .Spreadsheet__cell,
+.sheet-wrapper .Spreadsheet__cell--readonly {
+    background: var(--white) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border) !important;
+    font-size: 0.8rem;
+}
+.sheet-wrapper .Spreadsheet__cell--selected {
+    outline: 2px solid var(--primary) !important;
+    outline-offset: -1px;
+    box-shadow: none !important;
+}
+.sheet-wrapper .Spreadsheet__active-cell {
+    outline: 2px solid var(--primary) !important;
+}
+.sheet-wrapper .Spreadsheet__active-cell input,
+.sheet-wrapper .Spreadsheet__active-cell textarea {
+    font-family: var(--font) !important;
+    font-size: 0.8rem !important;
+    color: var(--text) !important;
+    background: var(--white) !important;
+    caret-color: var(--primary);
+}

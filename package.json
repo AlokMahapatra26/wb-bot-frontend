@@ -18,6 +18,8 @@
     "@types/react-dom": "^19.2.3",
     "astro": "^6.4.7",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "react-spreadsheet": "^0.10.1",
+    "scheduler": "^0.27.0"
   }
 }

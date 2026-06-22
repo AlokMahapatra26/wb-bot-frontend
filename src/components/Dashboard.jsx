@@ -654,11 +654,8 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
                             handleSaveBusinessSettings={handleSaveBusinessSettings}
                             businessExcludeContacts={businessExcludeContacts} exclusionInput={exclusionInput} setExclusionInput={setExclusionInput}
                             handleAddExclusion={handleAddExclusion} handleRemoveExclusion={handleRemoveExclusion}
-                            knowledgeRows={knowledgeRows} editingRowId={editingRowId} editTrigger={editTrigger} setEditTrigger={setEditTrigger}
-                            editResponse={editResponse} setEditResponse={setEditResponse}
-                            startEditKnowledge={startEditKnowledge} handleUpdateKnowledge={handleUpdateKnowledge} setEditingRowId={setEditingRowId}
-                            handleDeleteKnowledge={handleDeleteKnowledge} handleAddKnowledge={handleAddKnowledge}
-                            newTrigger={newTrigger} setNewTrigger={setNewTrigger} newResponse={newResponse} setNewResponse={setNewResponse}
+                            knowledgeRows={knowledgeRows} loadKnowledge={loadKnowledge}
+                            supabase={supabase} user={user}
                         />
                     )}
 
