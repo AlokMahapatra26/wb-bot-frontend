@@ -53,7 +53,7 @@ const NAV_ITEMS = [
     }
 ];
 
-export default function Sidebar({ activeView, setActiveView, setActiveChatJid, isSidebarCollapsed, setIsSidebarCollapsed, theme, toggleTheme, handleLogout, hideResponderTab, hideBusinessTab }) {
+export default function Sidebar({ activeView, setActiveView, setActiveChatJid, isSidebarCollapsed, setIsSidebarCollapsed, theme, toggleTheme, handleLogout, hideResponderTab, hideBusinessTab, isBackendOnline }) {
     const navBtnStyle = (key) => ({
         display: 'flex',
         alignItems: 'center',
@@ -92,10 +92,11 @@ export default function Sidebar({ activeView, setActiveView, setActiveChatJid, i
                 {/* Brand Logo & Collapse Toggle */}
                 {isSidebarCollapsed ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', width: '100%' }}>
-                        <span style={{ color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Whatsapp AI Bot Creator">
+                        <span style={{ color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }} title={`Whatsapp AI Bot Creator (${isBackendOnline ? 'Server Online' : 'Server Offline'})`}>
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                             </svg>
+                            <span style={{ position: 'absolute', top: '-1px', right: '-1px', width: '6px', height: '6px', borderRadius: '50%', background: isBackendOnline ? '#00a884' : '#ef4444', border: '1.5px solid var(--white)' }} />
                         </span>
                         <button 
                             type="button" 
@@ -114,9 +115,23 @@ export default function Sidebar({ activeView, setActiveView, setActiveChatJid, i
                     </div>
                 ) : (
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                             <span className="logo" style={{ fontSize: '1.02rem', fontWeight: 700, whiteSpace: 'nowrap' }}>Whatsapp AI Bot <span style={{ color: 'var(--primary)' }}>Creator</span></span>
-                            <span style={{ fontSize: '0.62rem', fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '-2px' }}>Admin Dashboard</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <span style={{ fontSize: '0.62rem', fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Admin Dashboard</span>
+                                <div style={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: '3px', 
+                                    background: isBackendOnline ? 'rgba(0, 168, 132, 0.08)' : 'rgba(239, 68, 68, 0.08)', 
+                                    padding: '1px 5px', 
+                                    borderRadius: '8px', 
+                                    border: isBackendOnline ? '1px solid rgba(0, 168, 132, 0.15)' : '1px solid rgba(239, 68, 68, 0.15)' 
+                                }}>
+                                    <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isBackendOnline ? '#00a884' : '#ef4444', display: 'inline-block' }} />
+                                    <span style={{ fontSize: '0.5rem', fontWeight: 700, color: isBackendOnline ? '#00a884' : '#ef4444', letterSpacing: '0.5px' }}>{isBackendOnline ? 'ONLINE' : 'OFFLINE'}</span>
+                                </div>
+                            </div>
                         </div>
                         <button 
                             type="button" 

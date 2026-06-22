@@ -8,7 +8,8 @@ import SettingsView from './SettingsView';
 import InboxView from './InboxView';
 import AboutView from './AboutView';
 
-export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
+export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBotUrl }) {
+    const botUrl = rawBotUrl ? rawBotUrl.replace(/\/+$/, '') : '';
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -19,6 +20,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
     const [botStatus, setBotStatus] = useState('disconnected');
     const [qrCode, setQrCode] = useState('');
     const [logs, setLogs] = useState([]);
+    const [isBackendOnline, setIsBackendOnline] = useState(false);
 
     const [geminiKey, setGeminiKey] = useState('');
     const [geminiModel, setGeminiModel] = useState('gemini-2.5-flash');
@@ -154,7 +156,12 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
             const url = `${botUrl}/api/events?token=${encodeURIComponent(session.access_token)}`;
             eventSource = new EventSource(url);
 
+            eventSource.onopen = () => {
+                setIsBackendOnline(true);
+            };
+
             eventSource.onmessage = (event) => {
+                setIsBackendOnline(true);
                 try {
                     const data = JSON.parse(event.data);
                     if (data.status !== undefined) {
@@ -180,6 +187,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
             };
             eventSource.onerror = () => {
                 console.warn('SSE disconnected. Reconnecting in 5s...');
+                setIsBackendOnline(false);
                 eventSource.close();
                 reconnectTimeout = setTimeout(connectSSE, 5000);
             };
@@ -591,6 +599,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl }) {
                 handleLogout={handleLogout}
                 hideResponderTab={hideResponderTab}
                 hideBusinessTab={hideBusinessTab}
+                isBackendOnline={isBackendOnline}
             />
 
             <div style={{ flex: 1, height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
