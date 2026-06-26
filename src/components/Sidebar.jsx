@@ -12,14 +12,13 @@ export default function Sidebar({ activeView, setActiveView, setActiveChatJid, i
     const collapsed = isSidebarCollapsed;
 
     return (
-        <aside style={{
-            width: collapsed ? 64 : 240, background: 'var(--color-surface-card)', borderRight: '1px solid var(--color-hairline)',
-            display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-            padding: collapsed ? '24px 12px' : '24px 16px', flexShrink: 0, height: '100%',
-            boxSizing: 'border-box', transition: 'width 0.2s ease',
-            alignItems: collapsed ? 'center' : 'stretch'
+        <aside className="dashboard-sidebar" data-collapsed={collapsed ? "true" : "false"} style={{
+            width: collapsed ? 64 : 240,
+            transition: 'width 0.2s ease',
+            alignItems: collapsed ? 'center' : 'stretch',
+            padding: collapsed ? '24px 10px' : '24px 16px'
         }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 24, width: '100%' }}>
+            <div className="sidebar-brand" style={{ display: 'flex', flexDirection: 'column', gap: 24, width: '100%' }}>
                 {collapsed ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, width: '100%' }}>
                         <span style={{ color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }} title={`WhatsApp AI Bot (${isBackendOnline ? 'Online' : 'Offline'})`}>
@@ -48,7 +47,7 @@ export default function Sidebar({ activeView, setActiveView, setActiveChatJid, i
                     </div>
                 )}
 
-                <nav style={{ display: 'flex', flexDirection: 'column', gap: 4, width: '100%' }}>
+                <nav className="sidebar-nav" style={{ display: 'flex', flexDirection: 'column', gap: 4, width: '100%' }}>
                     {NAV_ITEMS.filter(item => {
                         if (item.key === 'responder' && hideResponderTab) return false;
                         if (item.key === 'business' && hideBusinessTab) return false;
@@ -75,7 +74,7 @@ export default function Sidebar({ activeView, setActiveView, setActiveChatJid, i
                 </nav>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', alignItems: collapsed ? 'center' : 'stretch' }}>
+            <div className="sidebar-footer" style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', alignItems: collapsed ? 'center' : 'stretch' }}>
                 <button type="button" onClick={toggleTheme} title={collapsed ? (theme === 'dark' ? "Light Mode" : "Dark Mode") : ""}
                     style={{ display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'flex-start', gap: collapsed ? 0 : 10, width: '100%', fontSize: 13, fontWeight: 500, padding: collapsed ? '8px 0' : '8px 12px', borderRadius: 8, background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', color: 'var(--color-body)', cursor: 'pointer' }}>
                     {theme === 'dark' ? (
@@ -90,17 +89,6 @@ export default function Sidebar({ activeView, setActiveView, setActiveChatJid, i
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
                     {!collapsed && <span>Logout</span>}
                 </button>
-
-                {!collapsed && (
-                    <div onClick={() => { setActiveView('about'); setActiveChatJid(null); }}
-                        style={{ marginTop: 8, padding: 12, borderRadius: 8, display: 'flex', flexDirection: 'column', gap: 4, fontSize: 11, cursor: 'pointer', border: '1px solid var(--color-hairline)', background: activeView === 'about' ? 'var(--color-surface-soft)' : 'var(--color-canvas)', color: 'var(--color-muted)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ fontWeight: 500, fontSize: 12, color: 'var(--color-ink)' }}>WhatsApp AI Bot</span>
-                            <span style={{ fontSize: 10, fontWeight: 500, padding: '2px 8px', borderRadius: 9999, background: 'var(--color-surface-cream-strong)', color: 'var(--color-primary)' }}>v1.2</span>
-                        </div>
-                        <span style={{ fontWeight: 500, color: 'var(--color-muted-soft)' }}>@AlokMahapatra26</span>
-                    </div>
-                )}
             </div>
         </aside>
     );

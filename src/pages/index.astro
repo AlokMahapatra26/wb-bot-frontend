@@ -10,9 +10,9 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.
         <span style="font-size: 14px; font-weight: 500; letter-spacing: -0.2px; color: var(--color-on-dark); font-family: var(--font-body);">WhatsApp AI Bot <span style="color: var(--color-primary);">Creator</span></span>
     </header>
 
-    <main style="max-width: 1200px; margin-left: auto; margin-right: auto; padding-left: 32px; padding-right: 32px; padding-top: 96px; padding-bottom: 96px; display: flex; flex-direction: column; gap: 96px;">
+    <main class="landing-main">
         <!-- HERO -->
-        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center;">
+        <div class="landing-hero">
             <div style="display: flex; flex-direction: column;">
                 <h1 style="font-family: var(--font-display); font-size: 56px; font-weight: 400; line-height: 1.05; letter-spacing: -1.5px; color: var(--color-on-dark); margin: 0;">Automate your WhatsApp with <em style="font-style: italic; color: var(--color-primary);">intelligence</em></h1>
                 <p style="font-family: var(--font-body); font-size: 18px; line-height: 1.6; color: var(--color-on-dark-soft); margin-top: 24px; max-width: 520px;">Define custom AI personalities, instructions, and triggers per contact. Lightweight, database-backed, and beautifully multi-tenant.</p>
@@ -51,24 +51,31 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.
                     <button type="submit" id="submit-btn" style="background: var(--color-primary); color: var(--color-on-primary); border: none; font-weight: 500; padding: 12px 20px; font-size: 14px; border-radius: 8px; transition: all 0.15s; margin-top: 8px; width: 100%; height: 40px; cursor: pointer; font-family: var(--font-body);">Sign In</button>
                     <div id="feedback-msg" style="font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: none;"></div>
                 </form>
+                <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+                    <button type="button" id="demo-login-btn" style="background: var(--color-surface-dark-soft); color: var(--color-on-dark); border: 1px solid rgba(255,255,255,0.12); font-weight: 500; padding: 10px 16px; font-size: 13px; border-radius: 8px; width: 100%; height: 40px; cursor: pointer; font-family: var(--font-body); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                        Try with Demo Account
+                    </button>
+                    <p style="font-size: 11px; color: var(--color-on-dark-soft); text-align: center; line-height: 1.4;">Demo account has no WhatsApp linked or Gemini API key. You'll need to set those up yourself.</p>
+                </div>
             </section>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 96px; width: 100%;">
             <div>
                 <h3 style="font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; color: var(--color-on-dark-soft); margin-bottom: 24px; display: flex; align-items: center; gap: 8px;">Getting Started</h3>
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-                    <div style="background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 32px; display: flex; flex-direction: column; gap: 12px;">
+                <div class="landing-steps">
+                    <div class="card-responsive" style="background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 32px; display: flex; flex-direction: column; gap: 12px;">
                         <span style="font-size: 11px; font-family: var(--font-mono); color: var(--color-on-dark-soft); font-weight: 400; letter-spacing: 0.05em;">01 / REGISTRATION</span>
                         <h4 style="font-family: var(--font-display); font-size: 28px; font-weight: 400; letter-spacing: -0.3px; color: var(--color-on-dark);">Create your account</h4>
                         <p style="font-family: var(--font-body); font-size: 16px; line-height: 1.55; color: var(--color-on-dark-soft);">Sign up in seconds. Each user gets an entirely separate configuration space.</p>
                     </div>
-                    <div style="background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 32px; display: flex; flex-direction: column; gap: 12px;">
+                    <div class="card-responsive" style="background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 32px; display: flex; flex-direction: column; gap: 12px;">
                         <span style="font-size: 11px; font-family: var(--font-mono); color: var(--color-on-dark-soft); font-weight: 400; letter-spacing: 0.05em;">02 / LINK CHAT</span>
                         <h4 style="font-family: var(--font-display); font-size: 28px; font-weight: 400; letter-spacing: -0.3px; color: var(--color-on-dark);">Scan the QR Code</h4>
                         <p style="font-family: var(--font-body); font-size: 16px; line-height: 1.55; color: var(--color-on-dark-soft);">Scan the generated secure QR code with WhatsApp on your phone to link the bot.</p>
                     </div>
-                    <div style="background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 32px; display: flex; flex-direction: column; gap: 12px;">
+                    <div class="card-responsive" style="background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 32px; display: flex; flex-direction: column; gap: 12px;">
                         <span style="font-size: 11px; font-family: var(--font-mono); color: var(--color-on-dark-soft); font-weight: 400; letter-spacing: 0.05em;">03 / CUSTOMIZE</span>
                         <h4 style="font-family: var(--font-display); font-size: 28px; font-weight: 400; letter-spacing: -0.3px; color: var(--color-on-dark);">Set JID Rules</h4>
                         <p style="font-family: var(--font-body); font-size: 16px; line-height: 1.55; color: var(--color-on-dark-soft);">Write custom system prompts and assign them to specific phone numbers or groups.</p>
@@ -78,7 +85,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.
 
         </div>
 
-        <footer style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 32px; margin-top: 96px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--color-on-dark-soft);">
+        <footer class="landing-footer">
             <span>&copy; {new Date().getFullYear()} WhatsApp AI Bot Creator. All rights reserved.</span>
             <span>Built with Astro, React, Supabase, and Gemini API.</span>
         </footer>
@@ -155,6 +162,34 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.
         tabLogin?.addEventListener('click', () => switchTab('login'));
         tabRegister?.addEventListener('click', () => switchTab('register'));
 
+        // Demo login
+        const demoBtn = document.getElementById('demo-login-btn');
+        demoBtn?.addEventListener('click', async () => {
+            if (!submitBtn || !feedback) return;
+            emailInput.value = 'dummy@gmail.com';
+            passwordInput.value = '11223344';
+            switchTab('login');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Signing in...';
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({ email: 'dummy@gmail.com', password: '11223344' });
+                if (error) throw error;
+                const session = data.session;
+                if (session) {
+                    document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=${session.expires_in}; SameSite=Lax`;
+                }
+                feedback.textContent = 'Demo login success. Redirecting...';
+                feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.1); color: var(--color-on-dark); font-weight: 600;';
+                setTimeout(() => window.location.href = '/dashboard', 500);
+            } catch (err: any) {
+                feedback.textContent = 'Demo login failed: ' + (err.message || 'Unknown error');
+                feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.1); color: var(--color-on-dark);';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Sign In';
+            }
+        });
+
         authForm?.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!submitBtn || !feedback) return;
@@ -166,7 +201,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.
                 const confirmPassword = confirmPasswordInput?.value || '';
                 if (password !== confirmPassword) {
                     feedback.textContent = 'Passwords do not match.';
-                    feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-canvas); border: 1px solid rgba(255,255,255,0.08); color: var(--color-on-dark);';
+                    feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.1); color: #faf9f5;';
                     return;
                 }
             }
@@ -185,7 +220,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.
                         document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=${session.expires_in}; SameSite=Lax`;
                     }
                     feedback.textContent = 'Success. Redirecting...';
-                    feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-canvas); border: 1px solid rgba(255,255,255,0.08); color: var(--color-on-dark); font-weight: 600;';
+                    feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.1); color: #faf9f5; font-weight: 600;';
                     setTimeout(() => window.location.href = '/dashboard', 500);
                 } else {
                     const { data, error } = await supabase.auth.signUp({ email, password });
@@ -194,18 +229,18 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.
                         const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
                         if (signInError) {
                             feedback.textContent = 'Account created! Check your email for a verification link, then sign in.';
-                            feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-canvas); border: 1px solid rgba(255,255,255,0.08); color: var(--color-on-dark); font-weight: 600;';
+                            feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.1); color: #faf9f5; font-weight: 600;';
                             switchTab('login');
                         } else if (signInData.session) {
                             document.cookie = `sb-access-token=${signInData.session.access_token}; path=/; max-age=${signInData.session.expires_in}; SameSite=Lax`;
                             feedback.textContent = 'Account created! Redirecting...';
-                            feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-canvas); border: 1px solid rgba(255,255,255,0.08); color: var(--color-on-dark); font-weight: 600;';
+                            feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.1); color: #faf9f5; font-weight: 600;';
                             setTimeout(() => window.location.href = '/dashboard', 500);
                         }
                     } else if (data.session) {
                         document.cookie = `sb-access-token=${data.session.access_token}; path=/; max-age=${data.session.expires_in}; SameSite=Lax`;
                         feedback.textContent = 'Account created! Redirecting...';
-                        feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-canvas); border: 1px solid rgba(255,255,255,0.08); color: var(--color-on-dark); font-weight: 600;';
+                        feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.1); color: #faf9f5; font-weight: 600;';
                         setTimeout(() => window.location.href = '/dashboard', 500);
                     }
                 }
@@ -220,7 +255,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.
                 } else {
                     feedback.textContent = msg;
                 }
-                feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-canvas); border: 1px solid rgba(255,255,255,0.08); color: var(--color-on-dark);';
+                feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.1); color: #faf9f5;';
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = activeTab === 'login' ? 'Sign In' : 'Create Account';

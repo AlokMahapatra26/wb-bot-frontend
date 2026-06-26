@@ -55,9 +55,9 @@ export default function InboxView({
     };
 
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 24, height: '100%', width: '100%', overflow: 'hidden' }}>
+        <div className="inbox-grid">
             {/* Left Column: Recent Conversations List */}
-            <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: 20, background: 'var(--color-surface-card)', border: '1px solid var(--color-hairline)', borderRadius: 12 }}>
+            <div className="inbox-chat-list">
                 <div style={{ paddingBottom: 12, borderBottom: '1px solid var(--color-hairline)', margin: 0, fontSize: 16, fontWeight: 500, color: 'var(--color-ink)', letterSpacing: '-0.2px' }}>
                     Inbox
                 </div>
@@ -135,7 +135,7 @@ export default function InboxView({
             </div>
 
             {/* Right Column: Chat History Detail Panel */}
-            <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: 0, background: 'var(--color-surface-card)', border: '1px solid var(--color-hairline)', borderRadius: 12 }}>
+            <div className="inbox-chat-detail">
                 {activeChatJid ? (
                     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                         {/* Chat Header */}

@@ -6,7 +6,6 @@ import ResponderView from './ResponderView';
 import BusinessView from './BusinessView';
 import SettingsView from './SettingsView';
 import InboxView from './InboxView';
-import AboutView from './AboutView';
 
 export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBotUrl }) {
     const botUrl = rawBotUrl ? rawBotUrl.replace(/\/+$/, '') : '';
@@ -33,6 +32,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
     const [replyText, setReplyText] = useState('');
 
     const [targetJid, setTargetJid] = useState('');
+    const [contactName, setContactName] = useState('');
     const [talkingStylePreset, setTalkingStylePreset] = useState('');
     const [customTalkStyle, setCustomTalkStyle] = useState('');
     const [senderContext, setSenderContext] = useState('');
@@ -370,7 +370,8 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
         if (!targetJid.trim()) { alert('Please specify a JID first!'); return; }
         const systemPrompt = talkingStylePreset ? talkingStylePreset : customTalkStyle;
         const updatedContact = { 
-            number: targetJid.trim(), 
+            number: targetJid.trim(),
+            name: contactName.trim(),
             systemPrompt: systemPrompt.trim(), 
             talkingStyle: systemPrompt.trim(), 
             senderContext: senderContext.trim(), 
@@ -379,13 +380,13 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
         };
         const updatedList = [...aiContacts];
         const idx = updatedList.findIndex(c => c.number.trim().toLowerCase() === targetJid.trim().toLowerCase());
-        if (idx !== -1) updatedList[idx] = updatedContact; else updatedList.push(updatedContact);
+        if (idx !== -1) updatedList[idx] = { ...updatedList[idx], ...updatedContact }; else updatedList.push(updatedContact);
         const listToSave = [...updatedList];
         if (!individualEnabled) listToSave.push({ number: '__SYSTEM_INDIVIDUAL_RESPONDER_DISABLED__' });
         try {
             const { error } = await supabase.from('user_configs').update({ ai_contacts: listToSave }).eq('user_id', user.id);
             if (error) throw error;
-            setAiContacts(updatedList); setTargetJid(''); setTalkingStylePreset(''); setCustomTalkStyle(''); setSenderContext(''); setContactContext(''); setAllowBusinessKnowledge(false);
+            setAiContacts(updatedList); setTargetJid(''); setContactName(''); setTalkingStylePreset(''); setCustomTalkStyle(''); setSenderContext(''); setContactContext(''); setAllowBusinessKnowledge(false);
             alert('AI configuration saved!');
         } catch (err) { alert('Failed to save configuration: ' + err.message); }
     };
@@ -495,7 +496,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
     };
 
     const handleEditConfig = (c) => {
-        setTargetJid(c.number); setSenderContext(c.senderContext || ''); setContactContext(c.contactContext || '');
+        setTargetJid(c.number); setContactName(c.name || ''); setSenderContext(c.senderContext || ''); setContactContext(c.contactContext || '');
         setAllowBusinessKnowledge(!!c.allowBusinessKnowledge);
         const presets = [
             "Keep responses warm, friendly, helpful, and conversational. Use natural casual language with appropriate emojis.",
@@ -583,7 +584,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
     }
 
     return (
-        <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden', background: 'var(--color-canvas)' }}>
+        <div className="dashboard-root">
              <Sidebar
                 activeView={activeView} setActiveView={setActiveView}
                 setActiveChatJid={setActiveChatJid}
@@ -595,24 +596,83 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
                 isBackendOnline={isBackendOnline}
             />
 
-            <div style={{ flex: 1, height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                <main style={{
-                    display: 'grid', height: '100%', width: '100%', maxWidth: '100%', padding: 20, gap: 20, margin: 0, overflow: 'hidden', boxSizing: 'border-box',
-                    gridTemplateColumns: activeView === 'inbox' || activeView === 'about' ? '1fr' : activeView === 'settings' ? '1.2fr 1fr' : activeView === 'business' ? '1fr 1.5fr' : '1fr 1fr'
+            <div className="dashboard-content">
+                {/* Backend sleeping banner */}
+                {!isBackendOnline && (
+                    <div style={{ padding: '10px 20px', background: 'rgba(212,160,23,0.1)', borderBottom: '1px solid rgba(212,160,23,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexShrink: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-warning)', flexShrink: 0 }}></span>
+                            <span style={{ fontSize: 12, color: 'var(--color-ink)', fontWeight: 500 }}>Backend server is sleeping</span>
+                            <span style={{ fontSize: 11, color: 'var(--color-muted)' }}>— Free tier on Render sleeps after 15min of inactivity</span>
+                        </div>
+                        <button type="button" onClick={async () => {
+                            try {
+                                const el = document.getElementById('wake-btn');
+                                if (el) { el.textContent = 'Waking up...'; el.disabled = true; }
+                                await fetch(`${botUrl}/api/health`).catch(() => {});
+                                setTimeout(async () => {
+                                    try { await fetch(`${botUrl}/api/health`); } catch {}
+                                    if (el) { el.textContent = 'Wake Up Server'; el.disabled = false; }
+                                }, 3000);
+                            } catch {}
+                        }} id="wake-btn" style={{ background: 'var(--color-warning)', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 14px', fontSize: 12, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                            Wake Up Server
+                        </button>
+                    </div>
+                )}
+                <main className="dashboard-main" style={{
+                    gridTemplateColumns: activeView === 'inbox' ? '1fr' : activeView === 'settings' ? '1.2fr 1fr' : activeView === 'business' ? '1fr 1.5fr' : '1fr 1fr',
+                    gridAutoRows: 'auto'
                 }}>
                     {activeView === 'chat' && (
-                        <StatusLogsView 
-                            botStatus={botStatus} qrCode={qrCode} handleDisconnectBot={handleDisconnectBot} 
-                            logs={logs} handleClearLogs={handleClearLogs}
-                            geminiKey={geminiKey} setGeminiKey={setGeminiKey}
-                            geminiModel={geminiModel} setGeminiModel={setGeminiModel}
-                            saveEngineSettings={saveEngineSettings}
-                        />
+                        <>
+                            {/* Onboarding checklist */}
+                            {(!geminiKey || botStatus !== 'connected' || aiContacts.length === 0) && (
+                                <div style={{ gridColumn: '1 / -1', background: 'var(--color-surface-card)', border: '1px solid var(--color-hairline)', borderRadius: 10, padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                                    <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-ink)' }}>Getting Started</span>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                                        {/* Step 1 */}
+                                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                                            <span style={{ width: 18, height: 18, borderRadius: 4, border: geminiKey ? 'none' : '1.5px solid var(--color-muted-soft)', background: geminiKey ? 'var(--color-success)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+                                                {geminiKey && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                                            </span>
+                                            <div>
+                                                <span style={{ fontSize: 12, fontWeight: 600, color: geminiKey ? 'var(--color-success)' : 'var(--color-ink)' }}>Add Gemini API Key</span>
+                                                <p style={{ fontSize: 11, color: 'var(--color-muted)', lineHeight: 1.4, marginTop: 2 }}>Go to "Settings" tab → Gemini Engine Settings and paste your API key. <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>Get a free key here →</a></p>
+                                            </div>
+                                        </div>
+                                        {/* Step 2 */}
+                                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                                            <span style={{ width: 18, height: 18, borderRadius: 4, border: botStatus === 'connected' ? 'none' : '1.5px solid var(--color-muted-soft)', background: botStatus === 'connected' ? 'var(--color-success)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+                                                {botStatus === 'connected' && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                                            </span>
+                                            <div>
+                                                <span style={{ fontSize: 12, fontWeight: 600, color: botStatus === 'connected' ? 'var(--color-success)' : 'var(--color-ink)' }}>Scan QR Code</span>
+                                                <p style={{ fontSize: 11, color: 'var(--color-muted)', lineHeight: 1.4, marginTop: 2 }}>Open WhatsApp on your phone → Settings → Linked Devices → Scan the QR code shown below.</p>
+                                            </div>
+                                        </div>
+                                        {/* Step 3 */}
+                                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                                            <span style={{ width: 18, height: 18, borderRadius: 4, border: aiContacts.length > 0 ? 'none' : '1.5px solid var(--color-muted-soft)', background: aiContacts.length > 0 ? 'var(--color-success)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+                                                {aiContacts.length > 0 && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                                            </span>
+                                            <div>
+                                                <span style={{ fontSize: 12, fontWeight: 600, color: aiContacts.length > 0 ? 'var(--color-success)' : 'var(--color-ink)' }}>Configure AI for a Contact</span>
+                                                <p style={{ fontSize: 11, color: 'var(--color-muted)', lineHeight: 1.4, marginTop: 2 }}>Wait for someone to message you — their JID will appear in "Chats" tab. Then go to "Individual Responder" and add that JID with a talk style.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            <StatusLogsView 
+                                botStatus={botStatus} qrCode={qrCode} handleDisconnectBot={handleDisconnectBot} 
+                                logs={logs} handleClearLogs={handleClearLogs}
+                                individualEnabled={individualEnabled} businessEnabled={businessEnabled}
+                                aiContacts={aiContacts} knowledgeRows={knowledgeRows}
+                            />
+                        </>
                     )}
 
-                    {activeView === 'about' && (
-                        <AboutView user={user} />
-                    )}
 
                     {activeView === 'inbox' && (
                         <InboxView
@@ -639,6 +699,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
                     {activeView === 'responder' && (
                         <ResponderView
                             targetJid={targetJid} setTargetJid={setTargetJid}
+                            contactName={contactName} setContactName={setContactName}
                             talkingStylePreset={talkingStylePreset} setTalkingStylePreset={setTalkingStylePreset}
                             customTalkStyle={customTalkStyle} setCustomTalkStyle={setCustomTalkStyle}
                             senderContext={senderContext} setSenderContext={setSenderContext}
@@ -671,7 +732,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
                             geminiKey={geminiKey} setGeminiKey={setGeminiKey}
                             geminiModel={geminiModel} setGeminiModel={setGeminiModel}
                             saveEngineSettings={saveEngineSettings}
-                            botStatus={botStatus} user={user}
+                            botStatus={botStatus} user={user} supabase={supabase}
                             aiContacts={aiContacts} businessExcludeContacts={businessExcludeContacts} knowledgeRows={knowledgeRows}
                             hideResponderTab={hideResponderTab} setHideResponderTab={handleToggleHideResponder}
                             hideBusinessTab={hideBusinessTab} setHideBusinessTab={handleToggleHideBusiness}

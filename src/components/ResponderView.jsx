@@ -3,6 +3,7 @@ import ToggleSwitch from './ToggleSwitch';
 
 export default function ResponderView({
     targetJid, setTargetJid,
+    contactName, setContactName,
     talkingStylePreset, setTalkingStylePreset,
     customTalkStyle, setCustomTalkStyle,
     senderContext, setSenderContext,
@@ -26,6 +27,12 @@ export default function ResponderView({
                         <p style={{ fontSize: 11, color: 'var(--color-muted-soft)', marginTop: 6, lineHeight: 1.6 }}>
                             Use full JID format: <code style={{ fontFamily: 'var(--font-mono)', background: 'var(--color-surface-soft)', paddingLeft: 4, paddingRight: 4, paddingTop: 2, paddingBottom: 2, borderRadius: 4, fontSize: 10, border: '1px solid var(--color-hairline)' }}>918849561649@s.whatsapp.net</code>
                         </p>
+                    </div>
+
+                    <div>
+                        <label htmlFor="ai-contact-name" style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--color-muted)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Contact Name</label>
+                        <input type="text" id="ai-contact-name" placeholder="e.g. Rahul, Mom, Office Group" value={contactName} onChange={(e) => setContactName(e.target.value)} style={{ width: '100%', padding: '10px 14px', fontFamily: 'var(--font-body)', fontSize: 14, border: '1px solid var(--color-hairline)', borderRadius: 8, background: 'var(--color-canvas)', color: 'var(--color-ink)', outline: 'none', height: 40, transition: 'all 0.15s' }} />
+                        <p style={{ fontSize: 11, color: 'var(--color-muted-soft)', marginTop: 6 }}>A friendly name to identify this contact easily.</p>
                     </div>
                     
                     <div>
@@ -86,7 +93,8 @@ export default function ResponderView({
                                 <div key={i} onClick={() => handleEditConfig(c)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, padding: 16, border: '1px solid var(--color-hairline)', borderRadius: 8, background: 'var(--color-canvas)', transition: 'all 0.15s' }} title="Click to edit">
                                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4, overflow: 'hidden' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                                            <span style={{ fontWeight: 500, fontSize: 13, color: 'var(--color-ink)' }}>{c.number}</span>
+                                            <span style={{ fontWeight: 500, fontSize: 13, color: 'var(--color-ink)' }}>{c.name || c.number}</span>
+                                            {c.name && <span style={{ fontSize: 10, color: 'var(--color-muted-soft)', fontFamily: 'var(--font-mono)' }}>{c.number.split('@')[0]}</span>}
                                             {c.allowBusinessKnowledge && (
                                                 <span style={{ fontSize: 9, fontWeight: 600, background: 'rgba(232,165,90,0.15)', color: 'var(--color-accent-amber)', paddingTop: 2, paddingBottom: 2, paddingLeft: 8, paddingRight: 8, borderRadius: 9999, textTransform: 'uppercase', letterSpacing: '0.5px' }}>FAQ</span>
                                             )}
