@@ -1,304 +1,105 @@
 import React from 'react';
 
 const NAV_ITEMS = [
-    {
-        key: 'chat',
-        label: 'Status & Logs',
-        icon: (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                <line x1="9" y1="9" x2="15" y2="9"/>
-                <line x1="9" y1="13" x2="15" y2="13"/>
-                <line x1="9" y1="17" x2="11" y2="17"/>
-            </svg>
-        )
-    },
-    {
-        key: 'inbox',
-        label: 'Chats',
-        icon: (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
-        )
-    },
-    {
-        key: 'responder',
-        label: 'Individual Responder',
-        icon: (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-            </svg>
-        )
-    },
-    {
-        key: 'business',
-        label: 'Business Autopilot',
-        icon: (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
-        )
-    },
-    {
-        key: 'settings',
-        label: 'Settings',
-        icon: (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                <circle cx="12" cy="12" r="3"/>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-            </svg>
-        )
-    }
+    { key: 'chat', label: 'Dashboard', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="11" y2="17"/></svg> },
+    { key: 'inbox', label: 'Chats', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> },
+    { key: 'responder', label: 'Individual Responder', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg> },
+    { key: 'business', label: 'Business Autopilot', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> },
+    { key: 'settings', label: 'Settings', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> }
 ];
 
 export default function Sidebar({ activeView, setActiveView, setActiveChatJid, isSidebarCollapsed, setIsSidebarCollapsed, theme, toggleTheme, handleLogout, hideResponderTab, hideBusinessTab, isBackendOnline }) {
-    const navBtnStyle = (key) => ({
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: isSidebarCollapsed ? 'center' : 'flex-start',
-        gap: isSidebarCollapsed ? '0' : '0.75rem',
-        width: '100%',
-        textAlign: 'left',
-        fontSize: '0.8rem',
-        fontWeight: 600,
-        padding: isSidebarCollapsed ? '0.7rem 0' : '0.7rem 0.85rem',
-        borderRadius: 'var(--radius-sm)',
-        background: activeView === key ? 'var(--primary)' : 'transparent',
-        color: activeView === key ? '#171717' : 'var(--text)',
-        border: '1px solid',
-        borderColor: activeView === key ? 'var(--primary)' : 'transparent',
-        cursor: 'pointer',
-        transition: 'all 0.15s ease'
-    });
+    const collapsed = isSidebarCollapsed;
 
     return (
         <aside style={{
-            width: isSidebarCollapsed ? '72px' : '260px',
-            background: 'var(--white)',
-            borderRight: '1px solid var(--border)',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            padding: isSidebarCollapsed ? '1.5rem 0.75rem' : '1.5rem',
-            flexShrink: 0,
-            height: '100%',
-            boxSizing: 'border-box',
-            transition: 'width 0.2s cubic-bezier(0.4, 0, 0.2, 1), padding 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-            alignItems: isSidebarCollapsed ? 'center' : 'stretch'
+            width: collapsed ? 64 : 240, background: 'var(--color-surface-card)', borderRight: '1px solid var(--color-hairline)',
+            display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+            padding: collapsed ? '24px 12px' : '24px 16px', flexShrink: 0, height: '100%',
+            boxSizing: 'border-box', transition: 'width 0.2s ease',
+            alignItems: collapsed ? 'center' : 'stretch'
         }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', width: '100%' }}>
-                {/* Brand Logo & Collapse Toggle */}
-                {isSidebarCollapsed ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', width: '100%' }}>
-                        <span style={{ color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }} title={`Whatsapp AI Bot Creator (${isBackendOnline ? 'Server Online' : 'Server Offline'})`}>
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                            </svg>
-                            <span style={{ position: 'absolute', top: '-1px', right: '-1px', width: '6px', height: '6px', borderRadius: '50%', background: isBackendOnline ? '#00a884' : '#ef4444', border: '1.5px solid var(--white)' }} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24, width: '100%' }}>
+                {collapsed ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, width: '100%' }}>
+                        <span style={{ color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }} title={`WhatsApp AI Bot (${isBackendOnline ? 'Online' : 'Offline'})`}>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            <span style={{ position: 'absolute', top: -2, right: -2, width: 7, height: 7, borderRadius: '50%', border: '2px solid var(--color-surface-card)', background: isBackendOnline ? 'var(--color-success)' : 'var(--color-error)' }} />
                         </span>
-                        <button 
-                            type="button" 
-                            onClick={() => setIsSidebarCollapsed(false)} 
-                            style={{
-                                background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                padding: '0.25rem', borderRadius: '4px', width: 'auto'
-                            }}
-                            title="Expand Sidebar"
-                        >
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="9 18 15 12 9 6" />
-                            </svg>
+                        <button type="button" onClick={() => setIsSidebarCollapsed(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--color-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 4, borderRadius: 4 }} title="Expand">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
                         </button>
                     </div>
                 ) : (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                            <span className="logo" style={{ fontSize: '1.02rem', fontWeight: 700, whiteSpace: 'nowrap' }}>Whatsapp AI Bot <span style={{ color: 'var(--primary)' }}>Creator</span></span>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <span style={{ fontSize: '0.62rem', fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Admin Dashboard</span>
-                                <div style={{ 
-                                    display: 'flex', 
-                                    alignItems: 'center', 
-                                    gap: '3px', 
-                                    background: isBackendOnline ? 'rgba(0, 168, 132, 0.08)' : 'rgba(239, 68, 68, 0.08)', 
-                                    padding: '1px 5px', 
-                                    borderRadius: '8px', 
-                                    border: isBackendOnline ? '1px solid rgba(0, 168, 132, 0.15)' : '1px solid rgba(239, 68, 68, 0.15)' 
-                                }}>
-                                    <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isBackendOnline ? '#00a884' : '#ef4444', display: 'inline-block' }} />
-                                    <span style={{ fontSize: '0.5rem', fontWeight: 700, color: isBackendOnline ? '#00a884' : '#ef4444', letterSpacing: '0.5px' }}>{isBackendOnline ? 'ONLINE' : 'OFFLINE'}</span>
-                                </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', padding: '0 4px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            <span style={{ fontSize: 15, fontWeight: 500, letterSpacing: '-0.3px', whiteSpace: 'nowrap', color: 'var(--color-ink)' }}>WhatsApp AI <span style={{ color: 'var(--color-primary)' }}>Bot</span></span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--color-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Dashboard</span>
+                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 10, fontWeight: 500, color: isBackendOnline ? 'var(--color-success)' : 'var(--color-error)' }}>
+                                    <span style={{ width: 5, height: 5, borderRadius: '50%', background: isBackendOnline ? 'var(--color-success)' : 'var(--color-error)' }} />
+                                    {isBackendOnline ? 'Online' : 'Offline'}
+                                </span>
                             </div>
                         </div>
-                        <button 
-                            type="button" 
-                            onClick={() => setIsSidebarCollapsed(true)} 
-                            style={{
-                                background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                padding: '0.25rem', borderRadius: '4px', width: 'auto'
-                            }}
-                            title="Collapse Sidebar"
-                        >
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="15 18 9 12 15 6" />
-                            </svg>
+                        <button type="button" onClick={() => setIsSidebarCollapsed(true)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--color-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 4, borderRadius: 4 }} title="Collapse">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
                         </button>
                     </div>
                 )}
 
-                {/* Navigation Menu */}
-                <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', width: '100%' }}>
+                <nav style={{ display: 'flex', flexDirection: 'column', gap: 4, width: '100%' }}>
                     {NAV_ITEMS.filter(item => {
                         if (item.key === 'responder' && hideResponderTab) return false;
                         if (item.key === 'business' && hideBusinessTab) return false;
                         return true;
-                    }).map(item => (
-                        <button 
-                            key={item.key}
-                            type="button" 
-                            onClick={() => { setActiveView(item.key); setActiveChatJid(null); }}
-                            style={navBtnStyle(item.key)}
-                            className={`sidebar-nav-btn ${activeView === item.key ? 'active' : ''}`}
-                            title={isSidebarCollapsed ? item.label : ""}
-                        >
-                            {item.icon}
-                            {!isSidebarCollapsed && <span>{item.label}</span>}
-                        </button>
-                    ))}
+                    }).map(item => {
+                        const active = activeView === item.key;
+                        return (
+                            <button key={item.key} type="button"
+                                onClick={() => { setActiveView(item.key); setActiveChatJid(null); }}
+                                title={collapsed ? item.label : ""}
+                                style={{
+                                    display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'flex-start',
+                                    gap: collapsed ? 0 : 10, width: '100%', textAlign: 'left', fontSize: 14, fontWeight: 500,
+                                    padding: collapsed ? '10px 0' : '10px 12px', borderRadius: 8, cursor: 'pointer',
+                                    transition: 'all 0.15s', border: 'none',
+                                    background: active ? 'var(--color-primary)' : 'transparent',
+                                    color: active ? 'var(--color-on-primary)' : 'var(--color-body)',
+                                }}>
+                                {item.icon}
+                                {!collapsed && <span>{item.label}</span>}
+                            </button>
+                        );
+                    })}
                 </nav>
             </div>
 
-            {/* Sidebar Footer */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%', alignItems: isSidebarCollapsed ? 'center' : 'stretch' }}>
-                <button 
-                    type="button" 
-                    onClick={toggleTheme} 
-                    style={{ 
-                        display: 'flex', alignItems: 'center',
-                        justifyContent: isSidebarCollapsed ? 'center' : 'flex-start',
-                        gap: isSidebarCollapsed ? '0' : '0.75rem',
-                        width: '100%', fontSize: '0.75rem', fontWeight: 600,
-                        padding: isSidebarCollapsed ? '0.55rem 0' : '0.55rem 0.75rem',
-                        borderRadius: 'var(--radius-sm)',
-                        background: 'var(--canvas-soft)', color: 'var(--text)',
-                        border: '1px solid var(--border)', cursor: 'pointer'
-                    }}
-                    title={isSidebarCollapsed ? (theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode") : ""}
-                >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', alignItems: collapsed ? 'center' : 'stretch' }}>
+                <button type="button" onClick={toggleTheme} title={collapsed ? (theme === 'dark' ? "Light Mode" : "Dark Mode") : ""}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'flex-start', gap: collapsed ? 0 : 10, width: '100%', fontSize: 13, fontWeight: 500, padding: collapsed ? '8px 0' : '8px 12px', borderRadius: 8, background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', color: 'var(--color-body)', cursor: 'pointer' }}>
                     {theme === 'dark' ? (
-                        <>
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ flexShrink: 0 }}>
-                                <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                            </svg>
-                            {!isSidebarCollapsed && <span>Light Mode</span>}
-                        </>
+                        <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>{!collapsed && <span>Light Mode</span>}</>
                     ) : (
-                        <>
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ flexShrink: 0 }}>
-                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                            </svg>
-                            {!isSidebarCollapsed && <span>Dark Mode</span>}
-                        </>
+                        <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>{!collapsed && <span>Dark Mode</span>}</>
                     )}
                 </button>
-                
-                <button 
-                    type="button" 
-                    onClick={handleLogout} 
-                    style={{ 
-                        display: 'flex', alignItems: 'center',
-                        justifyContent: isSidebarCollapsed ? 'center' : 'flex-start',
-                        gap: isSidebarCollapsed ? '0' : '0.75rem',
-                        width: '100%', fontSize: '0.75rem', fontWeight: 600,
-                        padding: isSidebarCollapsed ? '0.55rem 0' : '0.55rem 0.75rem',
-                        borderRadius: 'var(--radius-sm)',
-                        background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444',
-                        border: '1px solid rgba(239, 68, 68, 0.2)', cursor: 'pointer'
-                    }}
-                    title={isSidebarCollapsed ? "Logout" : ""}
-                >
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ flexShrink: 0 }}>
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
-                    </svg>
-                    {!isSidebarCollapsed && <span>Logout</span>}
+
+                <button type="button" onClick={handleLogout} title={collapsed ? "Logout" : ""}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'flex-start', gap: collapsed ? 0 : 10, width: '100%', fontSize: 13, fontWeight: 500, padding: collapsed ? '8px 0' : '8px 12px', borderRadius: 8, background: 'transparent', border: '1px solid var(--color-hairline)', color: 'var(--color-error)', cursor: 'pointer' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                    {!collapsed && <span>Logout</span>}
                 </button>
 
-                {!isSidebarCollapsed ? (
-                    <div 
-                        onClick={() => { setActiveView('about'); setActiveChatJid(null); }}
-                        style={{
-                            marginTop: '0.75rem',
-                            padding: '0.75rem',
-                            borderRadius: 'var(--radius-sm)',
-                            background: activeView === 'about' ? 'var(--primary)' : 'var(--canvas-soft)',
-                            border: activeView === 'about' ? '1px solid var(--primary)' : '1px solid var(--border)',
-                            color: activeView === 'about' ? '#171717' : 'var(--dim)',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '0.4rem',
-                            fontSize: '0.68rem',
-                            cursor: 'pointer',
-                            transition: 'all 0.15s ease'
-                        }}
-                        className="sidebar-info-card"
-                    >
+                {!collapsed && (
+                    <div onClick={() => { setActiveView('about'); setActiveChatJid(null); }}
+                        style={{ marginTop: 8, padding: 12, borderRadius: 8, display: 'flex', flexDirection: 'column', gap: 4, fontSize: 11, cursor: 'pointer', border: '1px solid var(--color-hairline)', background: activeView === 'about' ? 'var(--color-surface-soft)' : 'var(--color-canvas)', color: 'var(--color-muted)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ fontWeight: 700, color: activeView === 'about' ? '#171717' : 'var(--text)' }}>WhatsApp AI Bot</span>
-                            <span style={{ 
-                                background: activeView === 'about' ? 'rgba(23, 23, 23, 0.12)' : 'rgba(0, 168, 132, 0.12)', 
-                                color: activeView === 'about' ? '#171717' : 'var(--primary)', 
-                                padding: '1px 5px', 
-                                borderRadius: '4px', 
-                                fontSize: '0.58rem',
-                                fontWeight: 700,
-                                border: activeView === 'about' ? '1px solid rgba(23, 23, 23, 0.25)' : '1px solid rgba(0, 168, 132, 0.2)'
-                            }}>v1.2.0</span>
+                            <span style={{ fontWeight: 500, fontSize: 12, color: 'var(--color-ink)' }}>WhatsApp AI Bot</span>
+                            <span style={{ fontSize: 10, fontWeight: 500, padding: '2px 8px', borderRadius: 9999, background: 'var(--color-surface-cream-strong)', color: 'var(--color-primary)' }}>v1.2</span>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}>
-                                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                            </svg>
-                            <span 
-                                style={{ 
-                                    textDecoration: 'none', 
-                                    fontWeight: 600
-                                }}
-                            >
-                                @AlokMahapatra26
-                            </span>
-                        </div>
+                        <span style={{ fontWeight: 500, color: 'var(--color-muted-soft)' }}>@AlokMahapatra26</span>
                     </div>
-                ) : (
-                    <button 
-                        type="button"
-                        onClick={() => { setActiveView('about'); setActiveChatJid(null); }}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            width: '32px',
-                            height: '32px',
-                            borderRadius: '50%',
-                            background: activeView === 'about' ? 'var(--primary)' : 'var(--canvas-soft)',
-                            border: activeView === 'about' ? '1px solid var(--primary)' : '1px solid var(--border)',
-                            color: activeView === 'about' ? '#171717' : 'var(--muted)',
-                            transition: 'all 0.15s ease',
-                            marginTop: '0.5rem',
-                            cursor: 'pointer',
-                            padding: 0
-                        }}
-                        title="About WhatsApp AI Bot - v1.2.0"
-                    >
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="12" cy="12" r="10"/>
-                            <line x1="12" y1="16" x2="12" y2="12"/>
-                            <line x1="12" y1="8" x2="12.01" y2="8"/>
-                        </svg>
-                    </button>
                 )}
             </div>
         </aside>

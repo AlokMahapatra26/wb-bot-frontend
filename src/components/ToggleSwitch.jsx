@@ -10,23 +10,15 @@ export default function ToggleSwitch({ checked, onChange }) {
                 style={{ display: 'none' }}
             />
             <span style={{
-                width: '42px',
-                height: '24px',
-                background: checked ? 'var(--primary)' : 'var(--border)',
-                borderRadius: '12px',
-                position: 'relative',
+                width: 38, height: 22, borderRadius: 9999, position: 'relative', display: 'inline-block',
                 transition: 'background-color 0.2s',
-                display: 'inline-block'
+                backgroundColor: checked ? 'var(--color-primary)' : 'var(--color-hairline)'
             }}>
                 <span style={{
-                    width: '18px',
-                    height: '18px',
-                    background: checked ? '#171717' : 'var(--text)',
-                    borderRadius: '50%',
-                    position: 'absolute',
-                    top: '3px',
-                    left: checked ? '21px' : '3px',
-                    transition: 'left 0.2s, background-color 0.2s'
+                    width: 16, height: 16, borderRadius: 9999, position: 'absolute', top: 3,
+                    transition: 'all 0.2s', backgroundColor: '#fff',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                    left: checked ? 19 : 3
                 }} />
             </span>
         </label>

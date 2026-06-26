@@ -23,38 +23,26 @@ export default function InboxView({
 
     const checkIsBotActive = (jid) => {
         if (!jid) return false;
-        
-        // Check if individual responder list is globally disabled
         const isIndividualDisabled = aiContacts.some(c => c.number === '__SYSTEM_INDIVIDUAL_RESPONDER_DISABLED__');
-        
         let hasIndividualMatch = false;
         let isConfigDisabled = false;
-        
         if (!isIndividualDisabled) {
             const matchedConfig = aiContacts.find(c => {
                 const configNum = c.number.trim().toLowerCase();
                 const remoteJid = jid.trim().toLowerCase();
                 if (configNum === remoteJid) return true;
-                
                 const cleanConfig = configNum.replace(/\D/g, '');
                 const cleanRemote = remoteJid.replace(/\D/g, '');
-                if (cleanConfig && cleanConfig.length >= 8 && cleanRemote.endsWith(cleanConfig)) {
-                    return true;
-                }
+                if (cleanConfig && cleanConfig.length >= 8 && cleanRemote.endsWith(cleanConfig)) return true;
                 return false;
             });
             if (matchedConfig) {
-                if (matchedConfig.disabled) {
-                    isConfigDisabled = true;
-                } else {
-                    hasIndividualMatch = true;
-                }
+                if (matchedConfig.disabled) isConfigDisabled = true;
+                else hasIndividualMatch = true;
             }
         }
-        
         if (hasIndividualMatch) return true;
         if (isConfigDisabled) return false;
-        
         if (businessEnabled && !jid.endsWith('@g.us')) {
             const cleanRemote = jid.replace(/\D/g, '');
             const isExcluded = businessExcludeContacts.some(exc => {
@@ -63,85 +51,49 @@ export default function InboxView({
             });
             if (!isExcluded) return true;
         }
-        
         return false;
     };
 
     return (
-        <div style={{
-            display: 'grid',
-            gridTemplateColumns: '320px 1fr',
-            gap: '1.5rem',
-            height: '100%',
-            width: '100%',
-            overflow: 'hidden'
-        }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 24, height: '100%', width: '100%', overflow: 'hidden' }}>
             {/* Left Column: Recent Conversations List */}
-            <div className="card" style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '1.25rem' }}>
-                <div className="panel-title" style={{ paddingBottom: '0.75rem', borderBottom: '1px solid var(--border)', margin: 0 }}>
+            <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: 20, background: 'var(--color-surface-card)', border: '1px solid var(--color-hairline)', borderRadius: 12 }}>
+                <div style={{ paddingBottom: 12, borderBottom: '1px solid var(--color-hairline)', margin: 0, fontSize: 16, fontWeight: 500, color: 'var(--color-ink)', letterSpacing: '-0.2px' }}>
                     Inbox
                 </div>
-                <div id="chat-list" className="feed-box" style={{ flex: 1, overflowY: 'auto', marginTop: '0.75rem', gap: '0.5rem', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ flex: 1, overflowY: 'auto', marginTop: 12, gap: 8, display: 'flex', flexDirection: 'column' }}>
                     {recentChats.length === 0 ? (
-                        <div className="empty-state">No conversations captured yet.</div>
+                        <div style={{ fontSize: 13, color: 'var(--color-muted)', textAlign: 'center', paddingTop: 16, paddingBottom: 16 }}>No conversations captured yet.</div>
                     ) : (
                         recentChats.map((chat, idx) => {
                             const isSelected = chat.chat_jid === activeChatJid;
                             return (
                                 <div 
                                     key={idx} 
-                                    className="chat-thread-row" 
                                     onClick={() => setActiveChatJid(chat.chat_jid)} 
-                                    style={{ 
-                                        cursor: 'pointer', 
-                                        padding: '0.75rem', 
-                                        borderRadius: 'var(--radius-sm)', 
-                                        border: isSelected ? '1px solid var(--primary)' : '1px solid var(--border)', 
-                                        display: 'flex', 
-                                        gap: '0.5rem', 
-                                        alignItems: 'center', 
-                                        position: 'relative', 
-                                        background: isSelected ? 'rgba(0, 168, 132, 0.08)' : 'var(--canvas-soft)',
-                                        transition: 'all 0.15s ease'
-                                    }}
+                                    style={{ cursor: 'pointer', padding: 12, borderRadius: 8, border: isSelected ? '1px solid var(--color-primary)' : '1px solid var(--color-hairline)', display: 'flex', gap: 8, alignItems: 'center', position: 'relative', transition: 'all 150ms', background: isSelected ? 'rgba(204,120,92,0.06)' : 'var(--color-canvas)' }}
                                 >
                                     <div style={{ flex: 1, minWidth: 0 }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', minWidth: 0, flex: 1, marginRight: '0.5rem' }}>
-                                                <span style={{ fontWeight: 700, fontSize: '0.78rem', color: isSelected ? 'var(--primary)' : 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', minWidth: 0, flex: 1, marginRight: 8 }}>
+                                                <span style={{ fontWeight: 700, fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: isSelected ? 'var(--color-primary)' : 'var(--color-ink)' }}>
                                                     {chat.sender_name || chat.chat_jid.split('@')[0]}
                                                 </span>
                                                 {checkIsBotActive(chat.chat_jid) && (
-                                                    <span 
-                                                        title="Bot Active" 
-                                                        style={{
-                                                            display: 'inline-flex',
-                                                            alignItems: 'center',
-                                                            background: 'rgba(0, 168, 132, 0.12)',
-                                                            color: 'var(--primary)',
-                                                            fontSize: '0.55rem',
-                                                            fontWeight: 700,
-                                                            padding: '1.5px 5px',
-                                                            borderRadius: '3px',
-                                                            marginLeft: '6px',
-                                                            flexShrink: 0,
-                                                            letterSpacing: '0.03em',
-                                                            border: '1px solid rgba(0, 168, 132, 0.2)'
-                                                        }}
-                                                    >
+                                                    <span style={{ display: 'inline-flex', alignItems: 'center', background: 'rgba(204,120,92,0.1)', color: 'var(--color-primary)', fontSize: 9, fontWeight: 700, paddingTop: '1.5px', paddingBottom: '1.5px', paddingLeft: 5, paddingRight: 5, borderRadius: 9999, marginLeft: 6, flexShrink: 0, letterSpacing: '0.05em', border: 'none' }}>
                                                         BOT ACTIVE
                                                     </span>
                                                 )}
                                             </div>
-                                            <span style={{ fontSize: '0.58rem', color: 'var(--dim)' }}>
+                                            <span style={{ fontSize: 9, color: 'var(--color-muted-soft)' }}>
                                                 {new Date(chat.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                             </span>
                                         </div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3px', alignItems: 'center' }}>
-                                            <span style={{ fontSize: '0.7rem', color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '85%' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 3, alignItems: 'center' }}>
+                                            <span style={{ fontSize: 11, color: 'var(--color-muted-soft)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '85%' }}>
                                                 {chat.is_from_me ? 'Me: ' : ''}{chat.latest_message}
                                             </span>
-                                            <span style={{ fontSize: '0.58rem', color: 'var(--dim)', fontFamily: 'monospace' }}>
+                                            <span style={{ fontSize: 9, color: 'var(--color-muted-soft)', fontFamily: 'var(--font-mono)' }}>
                                                 {chat.chat_jid.split('@')[0]}
                                             </span>
                                         </div>
@@ -155,25 +107,12 @@ export default function InboxView({
                                                 e.stopPropagation();
                                                 setOpenDropdownJid(openDropdownJid === chat.chat_jid ? null : chat.chat_jid);
                                             }} 
-                                            style={{ 
-                                                background: 'none', border: 'none', color: 'var(--muted)', 
-                                                fontSize: '0.9rem', cursor: 'pointer', padding: '0.2rem 0.4rem', 
-                                                borderRadius: '4px', display: 'flex', alignItems: 'center',
-                                                justifyContent: 'center', transition: 'color 0.15s, background-color 0.15s'
-                                            }}
-                                            className="options-trigger-btn"
+                                            style={{ background: 'transparent', border: 'none', color: 'var(--color-muted-soft)', fontSize: 14, cursor: 'pointer', padding: '3px 6px', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 'auto' }}
                                         >
                                             ⋮
                                         </button>
                                         {openDropdownJid === chat.chat_jid && (
-                                            <div 
-                                                style={{ 
-                                                    position: 'absolute', right: 0, top: '100%', marginTop: '4px',
-                                                    background: 'var(--white)', border: '1px solid var(--border)', 
-                                                    borderRadius: 'var(--radius-sm)', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)', 
-                                                    zIndex: 100, minWidth: '100px'
-                                                }}
-                                            >
+                                            <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', borderRadius: 8, boxShadow: '0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.06)', zIndex: 100, minWidth: 100 }}>
                                                 <button 
                                                     type="button" 
                                                     onClick={(e) => {
@@ -181,12 +120,7 @@ export default function InboxView({
                                                         setOpenDropdownJid(null);
                                                         handleDeleteChat(e, chat.chat_jid);
                                                     }} 
-                                                    style={{ 
-                                                        width: '100%', textAlign: 'left', background: 'none', 
-                                                        border: 'none', padding: '0.55rem 0.75rem', color: '#ef4444', 
-                                                        fontSize: '0.75rem', cursor: 'pointer', fontWeight: 600
-                                                    }}
-                                                    className="dropdown-menu-item delete-chat-btn"
+                                                    style={{ width: '100%', textAlign: 'left', background: 'transparent', border: 'none', paddingTop: 8, paddingBottom: 8, paddingLeft: 12, paddingRight: 12, color: 'var(--color-error)', fontSize: 12, cursor: 'pointer', fontWeight: 600, borderRadius: 8 }}
                                                 >
                                                     Delete Chat
                                                 </button>
@@ -201,43 +135,27 @@ export default function InboxView({
             </div>
 
             {/* Right Column: Chat History Detail Panel */}
-            <div className="card feed-panel" style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: 0 }}>
+            <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: 0, background: 'var(--color-surface-card)', border: '1px solid var(--color-hairline)', borderRadius: 12 }}>
                 {activeChatJid ? (
                     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                         {/* Chat Header */}
-                        <div className="panel-title" style={{ padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', borderBottom: '1px solid var(--border)', margin: 0 }}>
-                            <button type="button" onClick={() => setActiveChatJid(null)} className="select-sender-btn" style={{ margin: 0, padding: '0.25rem 0.6rem', fontSize: '0.72rem' }}>
+                        <div style={{ paddingTop: 12, paddingBottom: 12, paddingLeft: 24, paddingRight: 24, display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid var(--color-hairline)', margin: 0 }}>
+                            <button type="button" onClick={() => setActiveChatJid(null)} style={{ margin: 0, paddingTop: 4, paddingBottom: 4, paddingLeft: 10, paddingRight: 10, fontSize: 12, borderRadius: 8, border: '1px solid var(--color-hairline)', background: 'var(--color-canvas)', color: 'var(--color-muted)', cursor: 'pointer', fontWeight: 500, width: 'auto' }}>
                                 &larr; Close
                             </button>
-                            <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.25, flex: 1, minWidth: 0 }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2, flex: 1, minWidth: 0 }}>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <span id="detail-chat-title" style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                    <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--color-ink)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                         {activeChatDetail?.sender_name || activeChatJid.split('@')[0]}
                                     </span>
                                     {checkIsBotActive(activeChatJid) && (
-                                        <span 
-                                            title="Bot Active" 
-                                            style={{
-                                                display: 'inline-flex',
-                                                alignItems: 'center',
-                                                background: 'rgba(0, 168, 132, 0.12)',
-                                                color: 'var(--primary)',
-                                                fontSize: '0.55rem',
-                                                fontWeight: 700,
-                                                padding: '1.5px 5px',
-                                                borderRadius: '3px',
-                                                marginLeft: '6px',
-                                                flexShrink: 0,
-                                                letterSpacing: '0.03em',
-                                                border: '1px solid rgba(0, 168, 132, 0.2)'
-                                            }}
-                                        >
+                                        <span style={{ display: 'inline-flex', alignItems: 'center', background: 'rgba(204,120,92,0.1)', color: 'var(--color-primary)', fontSize: 9, fontWeight: 700, paddingTop: '1.5px', paddingBottom: '1.5px', paddingLeft: 5, paddingRight: 5, borderRadius: 9999, marginLeft: 6, flexShrink: 0, letterSpacing: '0.05em', border: 'none' }}>
                                             BOT ACTIVE
                                         </span>
                                     )}
                                 </div>
-                                <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', marginTop: '0.15rem' }}>
-                                    <span id="detail-chat-jid" style={{ fontSize: '0.65rem', color: 'var(--dim)', fontFamily: 'monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '240px' }}>
+                                <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 2 }}>
+                                    <span style={{ fontSize: 10, color: 'var(--color-muted-soft)', fontFamily: 'var(--font-mono)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 240 }}>
                                         {activeChatJid}
                                     </span>
                                 </div>
@@ -246,22 +164,7 @@ export default function InboxView({
                             <button
                                 type="button"
                                 onClick={() => handleToggleIndividualBot?.(activeChatJid)}
-                                className="btn-sm"
-                                style={{
-                                    margin: 0,
-                                    padding: '0.3rem 0.6rem',
-                                    fontSize: '0.7rem',
-                                    width: 'auto',
-                                    fontWeight: 600,
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: '4px',
-                                    whiteSpace: 'nowrap',
-                                    background: checkIsBotActive(activeChatJid) ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
-                                    color: checkIsBotActive(activeChatJid) ? '#ef4444' : '#10b981',
-                                    border: `1px solid ${checkIsBotActive(activeChatJid) ? 'rgba(239, 68, 68, 0.25)' : 'rgba(16, 185, 129, 0.25)'}`,
-                                    marginRight: '6px'
-                                }}
+                                style={{ margin: 0, paddingTop: 4, paddingBottom: 4, paddingLeft: 10, paddingRight: 10, fontSize: 11, width: 'auto', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap', borderRadius: 8, border: checkIsBotActive(activeChatJid) ? '1px solid rgba(198,69,69,0.25)' : '1px solid rgba(93,184,114,0.25)', cursor: 'pointer', transition: 'colors 150ms', background: checkIsBotActive(activeChatJid) ? 'rgba(198,69,69,0.12)' : 'rgba(93,184,114,0.12)', color: checkIsBotActive(activeChatJid) ? 'var(--color-error)' : 'var(--color-success)' }}
                             >
                                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
                                     {checkIsBotActive(activeChatJid) ? (
@@ -270,31 +173,15 @@ export default function InboxView({
                                             <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
                                         </>
                                     ) : (
-                                        <>
-                                            <polyline points="20 6 9 17 4 12" />
-                                        </>
+                                        <polyline points="20 6 9 17 4 12" />
                                     )}
                                 </svg>
                                 {checkIsBotActive(activeChatJid) ? 'Turn Bot OFF' : 'Turn Bot ON'}
                             </button>
                             <button
                                 type="button"
-                                onClick={() => {
-                                    setTargetJid(activeChatJid);
-                                    setActiveView('responder');
-                                }}
-                                className="btn-sm btn-primary"
-                                style={{
-                                    margin: 0,
-                                    padding: '0.3rem 0.6rem',
-                                    fontSize: '0.7rem',
-                                    width: 'auto',
-                                    fontWeight: 600,
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: '4px',
-                                    whiteSpace: 'nowrap'
-                                }}
+                                onClick={() => { setTargetJid(activeChatJid); setActiveView('responder'); }}
+                                style={{ margin: 0, paddingTop: 4, paddingBottom: 4, paddingLeft: 10, paddingRight: 10, fontSize: 11, width: 'auto', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap', borderRadius: 8, background: 'var(--color-primary)', color: 'var(--color-on-primary)', border: 'none', cursor: 'pointer' }}
                             >
                                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
                                     <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
@@ -305,16 +192,16 @@ export default function InboxView({
                         </div>
                         
                         {/* Messages Log Panel */}
-                        <div id="detail-chat-history" className="feed-box" style={{ flex: 1, overflowY: 'auto', padding: '1.2rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.85rem', background: 'var(--bg)' }}>
+                        <div style={{ flex: 1, overflowY: 'auto', paddingTop: 20, paddingBottom: 20, paddingLeft: 24, paddingRight: 24, display: 'flex', flexDirection: 'column', gap: 14, background: 'var(--color-canvas)' }}>
                             {activeChatMessages.length === 0 ? (
-                                <div className="empty-state">No messages loaded.</div>
+                                <div style={{ fontSize: 13, color: 'var(--color-muted)', textAlign: 'center', paddingTop: 16, paddingBottom: 16 }}>No messages loaded.</div>
                             ) : (
                                 activeChatMessages.map((msg, idx) => (
                                     <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: msg.is_from_me ? 'flex-end' : 'flex-start' }}>
-                                        <div style={{ maxWidth: '75%', padding: '0.55rem 0.8rem', borderRadius: '12px', background: msg.is_from_me ? 'var(--primary)' : 'var(--white)', color: msg.is_from_me ? '#171717' : 'var(--text)', border: msg.is_from_me ? 'none' : '1px solid var(--border)', fontSize: '0.78rem', lineBreak: 'anywhere' }}>
+                                        <div style={{ maxWidth: '75%', paddingTop: 8, paddingBottom: 8, paddingLeft: 12, paddingRight: 12, borderRadius: 12, fontSize: 13, wordBreak: 'break-all', ...(msg.is_from_me ? { background: 'var(--color-primary)', color: 'var(--color-on-primary)', borderBottomRightRadius: 4 } : { background: 'var(--color-surface-soft)', color: 'var(--color-body)', border: '1px solid var(--color-hairline)', borderBottomLeftRadius: 4 }) }}>
                                             {msg.message_text}
                                         </div>
-                                        <span style={{ fontSize: '0.58rem', color: 'var(--dim)', marginTop: '2px', padding: '0 4px' }}>
+                                        <span style={{ fontSize: 9, color: 'var(--color-muted-soft)', marginTop: 2, paddingLeft: 4, paddingRight: 4 }}>
                                             {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </span>
                                     </div>
@@ -324,19 +211,19 @@ export default function InboxView({
                         </div>
 
                         {/* Compose Reply Form */}
-                        <form onSubmit={handleSendQuickReply} style={{ padding: '0.75rem 1.25rem', borderTop: '1px solid var(--border)', background: 'var(--white)', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                            <input type="text" placeholder="Type a message..." value={replyText} onChange={(e) => setReplyText(e.target.value)} required style={{ flex: 1, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.5rem 0.75rem', color: 'var(--text)', fontSize: '0.78rem', outline: 'none' }} />
-                            <button type="submit" className="btn-sm" style={{ width: 'auto', background: 'var(--primary)', color: '#171717', fontWeight: 600, padding: '0.5rem 0.85rem', fontSize: '0.75rem' }}>
+                        <form onSubmit={handleSendQuickReply} style={{ paddingTop: 12, paddingBottom: 12, paddingLeft: 20, paddingRight: 20, borderTop: '1px solid var(--color-hairline)', background: 'var(--color-surface-soft)', display: 'flex', gap: 8, alignItems: 'center' }}>
+                            <input type="text" placeholder="Type a message..." value={replyText} onChange={(e) => setReplyText(e.target.value)} required style={{ flex: 1, background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', borderRadius: 8, paddingTop: 10, paddingBottom: 10, paddingLeft: 14, paddingRight: 14, color: 'var(--color-ink)', fontSize: 13, outline: 'none', height: 40 }} />
+                            <button type="submit" style={{ width: 'auto', background: 'var(--color-primary)', color: 'var(--color-on-primary)', fontWeight: 500, paddingTop: 12, paddingBottom: 12, paddingLeft: 20, paddingRight: 20, fontSize: 14, borderRadius: 8, border: 'none', cursor: 'pointer' }}>
                                 SEND
                             </button>
                         </form>
                     </div>
                 ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--dim)', gap: '0.75rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--color-muted)', gap: 12 }}>
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.4 }}>
                             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                         </svg>
-                        <span style={{ fontSize: '0.8rem' }}>Select a conversation from the list to start chatting</span>
+                        <span style={{ fontSize: 13 }}>Select a conversation from the list to start chatting</span>
                     </div>
                 )}
             </div>

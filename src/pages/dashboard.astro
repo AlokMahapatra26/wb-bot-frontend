@@ -7,5 +7,9 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.
 const botUrl = import.meta.env.BOT_URL || 'http://localhost:3000';
 ---
 <Layout title="WhatsApp Bot Dashboard">
+    <script is:inline>
+        const t = localStorage.getItem('theme') || 'dark';
+        document.body.classList.toggle('dark-mode', t === 'dark');
+    </script>
     <DashboardComponent client:only="react" supabaseUrl={supabaseUrl} supabaseAnonKey={supabaseAnonKey} botUrl={botUrl} />
 </Layout>

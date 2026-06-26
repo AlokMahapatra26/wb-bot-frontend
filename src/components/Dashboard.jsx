@@ -567,30 +567,23 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
 
     if (!supabaseUrl || !supabaseAnonKey || !supabase) {
         return (
-            <div style={{ display: 'flex', height: '100vh', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#141414', color: '#ef4444', padding: '2rem', textAlign: 'center', fontFamily: 'sans-serif' }}>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>Dashboard Configuration Error</h3>
-                <p style={{ color: '#9a9a9a', marginTop: '0.5rem', fontSize: '0.9rem' }}>Supabase URL or Anon Key was not loaded into the dashboard component.</p>
+            <div style={{ display: 'flex', height: '100vh', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--color-surface-dark)', color: 'var(--color-error)', padding: 32, textAlign: 'center', fontFamily: 'var(--font-body)' }}>
+                <h3 style={{ fontSize: 19, fontWeight: 500, letterSpacing: '-0.3px' }}>Dashboard Configuration Error</h3>
+                <p style={{ color: 'var(--color-muted)', marginTop: 8, fontSize: 15 }}>Supabase URL or Anon Key was not loaded into the dashboard component.</p>
             </div>
         );
     }
 
     if (loading) {
         return (
-            <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', color: 'var(--text)' }}>
-                <p>Verifying secure dashboard session...</p>
+            <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center', background: 'var(--color-canvas)', color: 'var(--color-ink)' }}>
+                <p style={{ fontSize: 14 }}>Verifying secure dashboard session...</p>
             </div>
         );
     }
 
     return (
-        <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden', background: 'var(--bg)' }}>
-            <style dangerouslySetInnerHTML={{__html: `
-                .sidebar-nav-btn { transition: all 0.2s ease !important; }
-                .sidebar-nav-btn:not(.active):hover { background: var(--canvas-soft) !important; border-color: var(--border-dark) !important; color: var(--text) !important; }
-                .sidebar-nav-btn.active:hover { background: var(--primary) !important; color: #171717 !important; opacity: 0.95; }
-                .sidebar-nav-btn:active { transform: scale(0.98); }
-            `}} />
-
+        <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden', background: 'var(--color-canvas)' }}>
              <Sidebar
                 activeView={activeView} setActiveView={setActiveView}
                 setActiveChatJid={setActiveChatJid}
@@ -603,15 +596,18 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
             />
 
             <div style={{ flex: 1, height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                <main className="container" style={{
-                    display: 'grid',
-                    gridTemplateColumns: activeView === 'inbox' || activeView === 'about' ? '1fr' : activeView === 'settings' ? '1.2fr 1fr' : activeView === 'business' ? '1fr 1.5fr' : '1fr 1fr',
-                    height: '100%', width: '100%', maxWidth: '100%',
-                    padding: '1.5rem', gap: '1.5rem', margin: 0,
-                    overflowY: 'hidden', boxSizing: 'border-box'
+                <main style={{
+                    display: 'grid', height: '100%', width: '100%', maxWidth: '100%', padding: 20, gap: 20, margin: 0, overflow: 'hidden', boxSizing: 'border-box',
+                    gridTemplateColumns: activeView === 'inbox' || activeView === 'about' ? '1fr' : activeView === 'settings' ? '1.2fr 1fr' : activeView === 'business' ? '1fr 1.5fr' : '1fr 1fr'
                 }}>
                     {activeView === 'chat' && (
-                        <StatusLogsView botStatus={botStatus} qrCode={qrCode} handleDisconnectBot={handleDisconnectBot} logs={logs} handleClearLogs={handleClearLogs} />
+                        <StatusLogsView 
+                            botStatus={botStatus} qrCode={qrCode} handleDisconnectBot={handleDisconnectBot} 
+                            logs={logs} handleClearLogs={handleClearLogs}
+                            geminiKey={geminiKey} setGeminiKey={setGeminiKey}
+                            geminiModel={geminiModel} setGeminiModel={setGeminiModel}
+                            saveEngineSettings={saveEngineSettings}
+                        />
                     )}
 
                     {activeView === 'about' && (

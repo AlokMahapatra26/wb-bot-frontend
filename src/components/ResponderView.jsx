@@ -15,21 +15,22 @@ export default function ResponderView({
 }) {
     return (
         <>
-            {/* COL 1: Form to Manage Rules */}
-            <div className="column-left">
-                <div className="card">
-                    <div className="panel-title">Manage AI Auto-Responder JIDs</div>
-                    <div className="field">
-                        <label htmlFor="ai-number">Target WhatsApp JID</label>
-                        <input type="text" id="ai-number" placeholder="e.g. 918849561649@s.whatsapp.net" value={targetJid} onChange={(e) => setTargetJid(e.target.value)} />
-                        <div className="hint" style={{ fontSize: '0.68rem', color: 'var(--muted)', marginTop: '4px' }}>
-                            Only the exact WhatsApp JID (e.g. <code>918849561649@s.whatsapp.net</code> or <code>120363294328@g.us</code>) will work. Open any active chat on the right and click <strong>Use JID to Configure</strong> to copy it instantly here.
-                        </div>
+            {/* COL 1: Form */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20, overflowY: 'auto', paddingRight: 4 }}>
+                <div style={{ background: 'var(--color-surface-card)', border: '1px solid var(--color-hairline)', borderRadius: 12, padding: 32, display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    <div style={{ fontSize: 16, fontWeight: 500, color: 'var(--color-ink)', borderBottom: '1px solid var(--color-hairline)', paddingBottom: 12 }}>Manage AI Auto-Responder JIDs</div>
+                    
+                    <div>
+                        <label htmlFor="ai-number" style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--color-muted)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Target WhatsApp JID</label>
+                        <input type="text" id="ai-number" placeholder="e.g. 918849561649@s.whatsapp.net" value={targetJid} onChange={(e) => setTargetJid(e.target.value)} style={{ width: '100%', padding: '10px 14px', fontFamily: 'var(--font-body)', fontSize: 14, border: '1px solid var(--color-hairline)', borderRadius: 8, background: 'var(--color-canvas)', color: 'var(--color-ink)', outline: 'none', height: 40, transition: 'all 0.15s' }} />
+                        <p style={{ fontSize: 11, color: 'var(--color-muted-soft)', marginTop: 6, lineHeight: 1.6 }}>
+                            Use full JID format: <code style={{ fontFamily: 'var(--font-mono)', background: 'var(--color-surface-soft)', paddingLeft: 4, paddingRight: 4, paddingTop: 2, paddingBottom: 2, borderRadius: 4, fontSize: 10, border: '1px solid var(--color-hairline)' }}>918849561649@s.whatsapp.net</code>
+                        </p>
                     </div>
                     
-                    <div className="field">
-                        <label htmlFor="ai-prompt-template">Preset Talk Style</label>
-                        <select id="ai-prompt-template" value={talkingStylePreset} onChange={(e) => setTalkingStylePreset(e.target.value)}>
+                    <div>
+                        <label htmlFor="ai-prompt-template" style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--color-muted)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Preset Talk Style</label>
+                        <select id="ai-prompt-template" value={talkingStylePreset} onChange={(e) => setTalkingStylePreset(e.target.value)} style={{ width: '100%', padding: '10px 14px', paddingRight: 32, fontFamily: 'var(--font-body)', fontSize: 14, border: '1px solid var(--color-hairline)', borderRadius: 8, background: 'var(--color-canvas)', color: 'var(--color-ink)', outline: 'none', height: 40, cursor: 'pointer', transition: 'all 0.15s', appearance: 'none', WebkitAppearance: 'none', backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236c6a64'/%3E%3C/svg%3E\")", backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}>
                             <option value="">— Pick a preset template —</option>
                             <option value="Keep responses warm, friendly, helpful, and conversational. Use natural casual language with appropriate emojis.">Friendly & Conversational</option>
                             <option value="Keep answers extremely brief, direct, and under two sentences. Avoid unnecessary fluff or greeting patterns.">Short & Concise (SMS Style)</option>
@@ -43,111 +44,67 @@ export default function ResponderView({
                         </select>
                     </div>
 
-                    <details className="inner-details" style={{ marginTop: '10px' }} open>
-                        <summary style={{ cursor: 'pointer', fontSize: '0.75rem', color: 'var(--muted)' }}>Advanced / Custom Rules</summary>
-                        <div className="inner-content" style={{ marginTop: '10px' }}>
-                            <div className="field">
-                                <label htmlFor="ai-prompt">Custom Talk Style</label>
-                                <input type="text" id="ai-prompt" placeholder="Or write custom instructions (e.g. Talk like a Gen-Z)" value={customTalkStyle} onChange={(e) => setCustomTalkStyle(e.target.value)} />
+                    <details style={{ border: '1px solid var(--color-hairline)', borderRadius: 8, background: 'var(--color-canvas)' }} open>
+                        <summary style={{ cursor: 'pointer', fontSize: 12, color: 'var(--color-muted)', fontWeight: 500, padding: 12, listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center', userSelect: 'none', transition: 'all 0.15s' }}>
+                            <span>Advanced / Custom Rules</span>
+                            <span style={{ fontSize: 10 }}>▼</span>
+                        </summary>
+                        <div style={{ padding: 16, borderTop: '1px solid var(--color-hairline)', display: 'flex', flexDirection: 'column', gap: 14 }}>
+                            <div>
+                                <label htmlFor="ai-prompt" style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--color-muted)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Custom Talk Style</label>
+                                <input type="text" id="ai-prompt" placeholder="Or write custom instructions (e.g. Talk like a Gen-Z)" value={customTalkStyle} onChange={(e) => setCustomTalkStyle(e.target.value)} style={{ width: '100%', padding: '10px 14px', fontFamily: 'var(--font-body)', fontSize: 14, border: '1px solid var(--color-hairline)', borderRadius: 8, background: 'var(--color-canvas)', color: 'var(--color-ink)', outline: 'none', height: 40, transition: 'all 0.15s' }} />
                             </div>
-                            <div className="field">
-                                <label htmlFor="ai-sender-context">Your Personality / Style (Describe Yourself)</label>
-                                <textarea id="ai-sender-context" rows={2} placeholder="e.g. I am Alok, a software developer. I talk casually in Hinglish." value={senderContext} onChange={(e) => setSenderContext(e.target.value)}></textarea>
+                            <div>
+                                <label htmlFor="ai-sender-context" style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--color-muted)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Your Personality / Style</label>
+                                <textarea id="ai-sender-context" rows={2} placeholder="e.g. I am Alok, a software developer. I talk casually in Hinglish." value={senderContext} onChange={(e) => setSenderContext(e.target.value)} style={{ width: '100%', padding: '10px 14px', fontFamily: 'var(--font-body)', fontSize: 14, border: '1px solid var(--color-hairline)', borderRadius: 8, background: 'var(--color-canvas)', color: 'var(--color-ink)', outline: 'none', resize: 'vertical', transition: 'all 0.15s' }}></textarea>
                             </div>
-                            <div className="field">
-                                <label htmlFor="ai-contact-context">About This Contact</label>
-                                <textarea id="ai-contact-context" rows={2} placeholder="e.g. My friend Rahul. We chat about cricket. Very casual style." value={contactContext} onChange={(e) => setContactContext(e.target.value)}></textarea>
+                            <div>
+                                <label htmlFor="ai-contact-context" style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--color-muted)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '1.5px' }}>About This Contact</label>
+                                <textarea id="ai-contact-context" rows={2} placeholder="e.g. My friend Rahul. We chat about cricket." value={contactContext} onChange={(e) => setContactContext(e.target.value)} style={{ width: '100%', padding: '10px 14px', fontFamily: 'var(--font-body)', fontSize: 14, border: '1px solid var(--color-hairline)', borderRadius: 8, background: 'var(--color-canvas)', color: 'var(--color-ink)', outline: 'none', resize: 'vertical', transition: 'all 0.15s' }}></textarea>
                             </div>
                         </div>
                     </details>
  
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '15px', background: 'var(--canvas-soft)', padding: '0.6rem 0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'var(--color-canvas)', padding: 12, borderRadius: 8, border: '1px solid var(--color-hairline)' }}>
                         <ToggleSwitch checked={allowBusinessKnowledge} onChange={setAllowBusinessKnowledge} />
-                        <span style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text)', userSelect: 'none' }}>
-                            Allow access to Business FAQ Spreadsheet
-                        </span>
+                        <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--color-ink)', userSelect: 'none' }}>Allow access to Business FAQ Spreadsheet</span>
                     </div>
 
-                    <button type="button" onClick={handleAddContactConfig} className="btn-primary" style={{ marginTop: '15px' }}>Add / Update Contact Config</button>
+                    <button type="button" onClick={handleAddContactConfig} style={{ width: '100%', padding: '12px 20px', fontSize: 14, fontWeight: 500, borderRadius: 8, background: 'var(--color-primary)', color: 'var(--color-on-primary)', border: 'none', cursor: 'pointer', transition: 'all 0.15s', marginTop: 4 }}>Add / Update Contact Config</button>
                 </div>
             </div>
 
-            {/* COL 2: Active Rules configurations */}
-            <div className="column-right" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', height: '100%', overflow: 'hidden' }}>
-                <div className="card" style={{ flex: '1 1 0%', minHeight: '200px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                    <div className="panel-title" style={{ paddingBottom: '0.5rem', borderBottom: '1px solid var(--border)' }}>Active AI JID Configurations</div>
-                    <div id="ai-contacts-list" className="contacts-list-container" style={{ flex: 1, overflowY: 'auto', marginTop: '0.75rem' }}>
+            {/* COL 2: Active Rules */}
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+                <div style={{ background: 'var(--color-surface-card)', border: '1px solid var(--color-hairline)', borderRadius: 12, padding: 32, flex: 1, minHeight: 200, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                    <div style={{ fontSize: 16, fontWeight: 500, color: 'var(--color-ink)', paddingBottom: 12, borderBottom: '1px solid var(--color-hairline)', flexShrink: 0 }}>Active AI JID Configurations</div>
+                    <div style={{ flex: 1, overflowY: 'auto', marginTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
                         {aiContacts.length === 0 ? (
-                            <div className="empty-state">No auto-responder configurations added.</div>
+                            <div style={{ fontSize: 13, color: 'var(--color-muted-soft)', textAlign: 'center', paddingTop: 32, paddingBottom: 32 }}>No auto-responder configurations added.</div>
                         ) : (
                             aiContacts.map((c, i) => (
-                                <div key={i} className="ai-contact-row" onClick={() => handleEditConfig(c)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }} title="Click to edit configuration">
-                                    <div className="contact-info" style={{ flex: 1 }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
-                                            <span className="contact-number" style={{ fontWeight: 600 }}>{c.number}</span>
+                                <div key={i} onClick={() => handleEditConfig(c)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, padding: 16, border: '1px solid var(--color-hairline)', borderRadius: 8, background: 'var(--color-canvas)', transition: 'all 0.15s' }} title="Click to edit">
+                                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4, overflow: 'hidden' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                                            <span style={{ fontWeight: 500, fontSize: 13, color: 'var(--color-ink)' }}>{c.number}</span>
                                             {c.allowBusinessKnowledge && (
-                                                <span style={{ 
-                                                    fontSize: '0.58rem', 
-                                                    fontWeight: 700, 
-                                                    background: 'rgba(217, 119, 6, 0.12)', 
-                                                    color: '#eab308', 
-                                                    padding: '0.08rem 0.3rem', 
-                                                    borderRadius: '4px',
-                                                    border: '1px solid rgba(234, 179, 8, 0.25)',
-                                                    textTransform: 'uppercase',
-                                                    letterSpacing: '0.02em',
-                                                    display: 'inline-flex',
-                                                    alignItems: 'center'
-                                                }}>
-                                                    FAQ Enabled
-                                                </span>
+                                                <span style={{ fontSize: 9, fontWeight: 600, background: 'rgba(232,165,90,0.15)', color: 'var(--color-accent-amber)', paddingTop: 2, paddingBottom: 2, paddingLeft: 8, paddingRight: 8, borderRadius: 9999, textTransform: 'uppercase', letterSpacing: '0.5px' }}>FAQ</span>
                                             )}
                                         </div>
-                                        <span className="contact-prompt" style={{ fontSize: '0.7rem', display: 'block', opacity: 0.85 }}>{c.systemPrompt || 'Default AI text style'}</span>
-                                        {c.senderContext && (
-                                            <span className="contact-prompt" style={{ fontSize: '0.65rem', display: 'flex', alignItems: 'center', gap: '4px', opacity: 0.75, marginTop: '2px' }}>
-                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                                    <circle cx="12" cy="7" r="4" />
-                                                </svg>
-                                                <span>{c.senderContext.length > 52 ? `${c.senderContext.substring(0, 52)}…` : c.senderContext}</span>
-                                            </span>
-                                        )}
-                                        {c.contactContext && (
-                                            <span className="contact-prompt" style={{ fontSize: '0.65rem', display: 'flex', alignItems: 'center', gap: '4px', opacity: 0.75, marginTop: '2px' }}>
-                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                                    <polyline points="14 2 14 8 20 8" />
-                                                    <line x1="16" y1="13" x2="8" y2="13" />
-                                                    <line x1="16" y1="17" x2="8" y2="17" />
-                                                </svg>
-                                                <span>{c.contactContext.length > 52 ? `${c.contactContext.substring(0, 52)}…` : c.contactContext}</span>
-                                            </span>
-                                        )}
+                                        <span style={{ fontSize: 12, color: 'var(--color-muted-soft)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.systemPrompt || 'Default AI style'}</span>
                                     </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
                                         <button 
                                             type="button" 
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setActiveChatJid(c.number);
-                                                setActiveView('inbox');
-                                            }} 
-                                            className="btn-sm btn-primary" 
-                                            style={{ 
-                                                width: 'auto', fontSize: '0.7rem', fontWeight: 600, 
-                                                padding: '0.25rem 0.55rem', display: 'inline-flex',
-                                                alignItems: 'center', gap: '4px', margin: 0
-                                            }}
+                                            onClick={(e) => { e.stopPropagation(); setActiveChatJid(c.number); setActiveView('inbox'); }} 
+                                            style={{ fontSize: 11, fontWeight: 500, paddingTop: 6, paddingBottom: 6, paddingLeft: 10, paddingRight: 10, display: 'inline-flex', alignItems: 'center', gap: 4, borderRadius: 8, background: 'var(--color-primary)', color: 'var(--color-on-primary)', border: 'none', cursor: 'pointer', transition: 'all 0.15s' }}
                                         >
-                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
                                                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                                             </svg>
                                             Chat
                                         </button>
-                                        <span className="remove-badge-btn" onClick={(e) => { e.stopPropagation(); handleRemoveContactConfig(c.number); }} style={{ color: '#ef4444', fontSize: '1.2rem', padding: '0 5px' }}>
-                                            &times;
-                                        </span>
+                                        <span onClick={(e) => { e.stopPropagation(); handleRemoveContactConfig(c.number); }} style={{ color: 'var(--color-error)', fontSize: 18, cursor: 'pointer', transition: 'all 0.15s', lineHeight: 1 }}>×</span>
                                     </div>
                                 </div>
                             ))

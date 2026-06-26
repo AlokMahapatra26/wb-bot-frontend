@@ -4,193 +4,86 @@ import Layout from '../layouts/Layout.astro';
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL || import.meta.env.SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.env.SUPABASE_ANON_KEY || '';
 ---
-<Layout title="WhatsApp AI Bot Creator" bodyClass="landing-page">
-    <header class="header">
-        <span class="logo">WhatsApp AI Bot <span>Creator</span></span>
+<Layout title="WhatsApp AI Bot Creator">
+    <div style="overflow-y: auto; overflow-x: hidden; min-height: 100vh; background: var(--color-surface-dark); color: var(--color-on-dark);">
+    <header style="height: 64px; display: flex; align-items: center; justify-content: space-between; padding-left: 24px; padding-right: 24px; background: var(--color-surface-dark); border-bottom: 1px solid var(--color-surface-dark-elevated); position: sticky; top: 0; z-index: 50; backdrop-filter: blur(8px);">
+        <span style="font-size: 14px; font-weight: 500; letter-spacing: -0.2px; color: var(--color-on-dark); font-family: var(--font-body);">WhatsApp AI Bot <span style="color: var(--color-primary);">Creator</span></span>
     </header>
 
-    <main class="main-container">
-        <div class="hero-auth-row">
-            <div class="hero-group">
-                <h2 class="hero-title">Automate WhatsApp chats with <span style="color: var(--primary);">Gemini</span></h2>
-                <p class="hero-subtitle">Define custom AI personalities, instructions, and triggers per user or group chat JID. Lightweight, database-backed, and multi-tenant.</p>
+    <main style="max-width: 1200px; margin-left: auto; margin-right: auto; padding-left: 32px; padding-right: 32px; padding-top: 96px; padding-bottom: 96px; display: flex; flex-direction: column; gap: 96px;">
+        <!-- HERO -->
+        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center;">
+            <div style="display: flex; flex-direction: column;">
+                <h1 style="font-family: var(--font-display); font-size: 56px; font-weight: 400; line-height: 1.05; letter-spacing: -1.5px; color: var(--color-on-dark); margin: 0;">Automate your WhatsApp with <em style="font-style: italic; color: var(--color-primary);">intelligence</em></h1>
+                <p style="font-family: var(--font-body); font-size: 18px; line-height: 1.6; color: var(--color-on-dark-soft); margin-top: 24px; max-width: 520px;">Define custom AI personalities, instructions, and triggers per contact. Lightweight, database-backed, and beautifully multi-tenant.</p>
             </div>
 
-            <section class="auth-card">
-                <div class="tabs">
-                    <button type="button" class="tab active" id="tab-login">Sign In</button>
-                    <button type="button" class="tab" id="tab-register">Create Account</button>
+            <section style="background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 36px; display: flex; flex-direction: column; gap: 24px; width: 100%;">
+                <div style="display: flex; border-bottom: 1px solid rgba(255,255,255,0.08); gap: 8px;" id="auth-tabs">
+                    <button type="button" id="tab-login" style="flex: 1; background: transparent; border: none; border-bottom: 2px solid var(--color-primary); border-radius: 0; padding: 14px 8px; color: var(--color-on-dark); font-weight: 500; cursor: pointer; font-size: 14px; transition: all 0.15s; text-align: center; width: 100%; height: auto; font-family: var(--font-body);">Sign In</button>
+                    <button type="button" id="tab-register" style="flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; border-radius: 0; padding: 14px 8px; color: var(--color-on-dark-soft); font-weight: 500; cursor: pointer; font-size: 14px; transition: all 0.15s; text-align: center; width: 100%; height: auto; font-family: var(--font-body);">Create Account</button>
                 </div>
 
-                <form id="auth-form">
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" required placeholder="email@domain.com" />
+                <form id="auth-form" style="display: flex; flex-direction: column; gap: 20px;">
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label for="email" style="font-size: 13px; font-weight: 500; color: var(--color-on-dark);">Email</label>
+                        <input type="email" id="email" required placeholder="email@domain.com" style="font-size: 15px; padding: 10px 14px; border-radius: 8px; height: 40px; border: 1px solid rgba(255,255,255,0.12); background: var(--color-surface-dark-soft); color: var(--color-on-dark); outline: none; transition: border-color 0.15s; font-family: var(--font-body); width: 100%; box-sizing: border-box;" />
                     </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" required placeholder="••••••••" minlength="6" />
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label for="password" style="font-size: 13px; font-weight: 500; color: var(--color-on-dark);">Password</label>
+                        <div style="position: relative;">
+                            <input type="password" id="password" required placeholder="••••••••" minlength="6" style="font-size: 15px; padding: 10px 40px 10px 14px; border-radius: 8px; height: 40px; border: 1px solid rgba(255,255,255,0.12); background: var(--color-surface-dark-soft); color: var(--color-on-dark); outline: none; transition: border-color 0.15s; font-family: var(--font-body); width: 100%; box-sizing: border-box;" />
+                            <button type="button" id="toggle-password" aria-label="Show password" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: transparent; border: none; cursor: pointer; padding: 2px; width: auto; color: var(--color-on-dark-soft); font-size: 16px; line-height: 1;">
+                                👁
+                            </button>
+                        </div>
+                    </div>
+                    <div style="display: none; flex-direction: column; gap: 6px;" id="confirm-password-group">
+                        <label for="confirm-password" style="font-size: 13px; font-weight: 500; color: var(--color-on-dark);">Confirm Password</label>
+                        <div style="position: relative;">
+                            <input type="password" id="confirm-password" placeholder="••••••••" minlength="6" style="font-size: 15px; padding: 10px 40px 10px 14px; border-radius: 8px; height: 40px; border: 1px solid rgba(255,255,255,0.12); background: var(--color-surface-dark-soft); color: var(--color-on-dark); outline: none; transition: border-color 0.15s; font-family: var(--font-body); width: 100%; box-sizing: border-box;" />
+                            <button type="button" id="toggle-confirm-password" aria-label="Show password" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: transparent; border: none; cursor: pointer; padding: 2px; width: auto; color: var(--color-on-dark-soft); font-size: 16px; line-height: 1;">
+                                👁
+                            </button>
+                        </div>
                     </div>
 
-                    <button type="submit" id="submit-btn" class="btn">Sign In</button>
-                    <div id="feedback-msg" class="message"></div>
+                    <button type="submit" id="submit-btn" style="background: var(--color-primary); color: var(--color-on-primary); border: none; font-weight: 500; padding: 12px 20px; font-size: 14px; border-radius: 8px; transition: all 0.15s; margin-top: 8px; width: 100%; height: 40px; cursor: pointer; font-family: var(--font-body);">Sign In</button>
+                    <div id="feedback-msg" style="font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: none;"></div>
                 </form>
             </section>
         </div>
 
-        <div class="marketing-content-full">
+        <div style="display: flex; flex-direction: column; gap: 96px; width: 100%;">
             <div>
-                <h3 class="section-title">Getting Started</h3>
-                <div class="steps-container">
-                    <div class="step-card">
-                        <span class="step-num">01 / REGISTRATION</span>
-                        <h4>Create your account</h4>
-                        <p>Sign up in seconds. Each user gets an entirely separate configuration space.</p>
+                <h3 style="font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; color: var(--color-on-dark-soft); margin-bottom: 24px; display: flex; align-items: center; gap: 8px;">Getting Started</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                    <div style="background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 32px; display: flex; flex-direction: column; gap: 12px;">
+                        <span style="font-size: 11px; font-family: var(--font-mono); color: var(--color-on-dark-soft); font-weight: 400; letter-spacing: 0.05em;">01 / REGISTRATION</span>
+                        <h4 style="font-family: var(--font-display); font-size: 28px; font-weight: 400; letter-spacing: -0.3px; color: var(--color-on-dark);">Create your account</h4>
+                        <p style="font-family: var(--font-body); font-size: 16px; line-height: 1.55; color: var(--color-on-dark-soft);">Sign up in seconds. Each user gets an entirely separate configuration space.</p>
                     </div>
-                    <div class="step-card">
-                        <span class="step-num">02 / LINK CHAT</span>
-                        <h4>Scan the QR Code</h4>
-                        <p>Scan the generated secure QR code with WhatsApp on your phone to link the bot.</p>
+                    <div style="background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 32px; display: flex; flex-direction: column; gap: 12px;">
+                        <span style="font-size: 11px; font-family: var(--font-mono); color: var(--color-on-dark-soft); font-weight: 400; letter-spacing: 0.05em;">02 / LINK CHAT</span>
+                        <h4 style="font-family: var(--font-display); font-size: 28px; font-weight: 400; letter-spacing: -0.3px; color: var(--color-on-dark);">Scan the QR Code</h4>
+                        <p style="font-family: var(--font-body); font-size: 16px; line-height: 1.55; color: var(--color-on-dark-soft);">Scan the generated secure QR code with WhatsApp on your phone to link the bot.</p>
                     </div>
-                    <div class="step-card">
-                        <span class="step-num">03 / CUSTOMIZE</span>
-                        <h4>Set JID Rules</h4>
-                        <p>Write custom system prompts and assign them to specific phone numbers or groups.</p>
+                    <div style="background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 32px; display: flex; flex-direction: column; gap: 12px;">
+                        <span style="font-size: 11px; font-family: var(--font-mono); color: var(--color-on-dark-soft); font-weight: 400; letter-spacing: 0.05em;">03 / CUSTOMIZE</span>
+                        <h4 style="font-family: var(--font-display); font-size: 28px; font-weight: 400; letter-spacing: -0.3px; color: var(--color-on-dark);">Set JID Rules</h4>
+                        <p style="font-family: var(--font-body); font-size: 16px; line-height: 1.55; color: var(--color-on-dark-soft);">Write custom system prompts and assign them to specific phone numbers or groups.</p>
                     </div>
                 </div>
             </div>
 
-            <div>
-                <h3 class="section-title">Capabilities</h3>
-                <div class="features-grid">
-                    <div class="feature-box">
-                        <h4><span>●</span> Isolated Sessions</h4>
-                        <p>Active sockets and message streams run in completely isolated sandboxes for every tenant.</p>
-                    </div>
-                    <div class="feature-box">
-                        <h4><span>●</span> Session Persistence</h4>
-                        <p>WhatsApp credentials save directly to Supabase, reconnecting bots automatically on redeploys.</p>
-                    </div>
-                    <div class="feature-box">
-                        <h4><span>●</span> Custom Contexts</h4>
-                        <p>Set unique Gemini AI prompts and configurations per JID contact or group thread.</p>
-                    </div>
-                    <div class="feature-box">
-                        <h4><span>●</span> Real-time Live Log</h4>
-                        <p>Watch incoming queries, generation times, and bot auto-responses render instantly.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="section-title">Use Cases</h3>
-                <div class="use-cases-grid">
-                    <div class="use-case-box">
-                        <h4>24/7 AI Customer Support Agent</h4>
-                        <p>Feed Gemini your business information, hours of operation, and product catalog. The bot will automatically handle client inquiries, provide price quotes, and answer common questions around the clock without manual intervention.</p>
-                    </div>
-                    <div class="use-case-box">
-                        <h4>Automated Out-of-Office Assistant</h4>
-                        <p>Turn on intelligent, context-aware auto-responders during public holidays, weekends, or after business hours. Provide professional, friendly replies detailing when the team will return, or direct clients to critical self-service resources.</p>
-                    </div>
-                    <div class="use-case-box">
-                        <h4>Interactive Marketing Campaigns</h4>
-                        <p>Engage leads with quiz flows, document collections, or smart options menus. The bot collects information inline and updates your Supabase database in real-time, helping you run high-conversion campaigns directly inside WhatsApp.</p>
-                    </div>
-                    <div class="use-case-box">
-                        <h4>Multi-Department AI Router</h4>
-                        <p>Route chats automatically by assigning tailored instructions to specific client profiles. Provide personalized system instructions for distinct target JIDs (e.g. VIP clients, group chats, support lines) to change response tones instantly.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="section-title">Core Architecture</h3>
-                <div style="display: flex; flex-direction: column; gap: 1.5rem; font-size: 0.88rem; color: var(--muted); line-height: 1.6;">
-                    <p>
-                        The <strong>WhatsApp AI Bot Creator</strong> platform is built using a modern, decoupled architecture designed to deliver enterprise-grade availability, sub-second latency, and rigorous data privacy. 
-                        Unlike simplistic browser extensions that require you to keep your tab active, our solution utilizes a persistent server-side connection daemon powered by Node.js and the robust Baileys library.
-                    </p>
-                    <div class="use-cases-grid">
-                        <div class="use-case-box">
-                            <h4>Isolated Tenant Daemon Sandboxes</h4>
-                            <p>Every linked WhatsApp device runs in its own sandboxed container process. This guarantees that socket connections, QR generation tasks, and token states remain absolutely isolated, preventing cross-tenant leaks or interference.</p>
-                        </div>
-                        <div class="use-case-box">
-                            <h4>Real-Time Postgres Sync via Supabase</h4>
-                            <p>We leverage Supabase PostgreSQL row-level security (RLS) to manage configs and target rules. Auth tokens and linked states sync directly to our database, allowing the bot daemon to automatically reconnect and resume answering messages even if the host server is rebooted.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="section-title">Step-by-Step Setup Guide</h3>
-                <div style="display: flex; flex-direction: column; gap: 1.5rem; font-size: 0.88rem; color: var(--muted); line-height: 1.6;">
-                    <ol style="margin-left: 1.25rem; display: flex; flex-direction: column; gap: 1rem;">
-                        <li>
-                            <strong>Create Your Credentials Sandbox:</strong> 
-                            Sign up using your business email to provision an isolated workspace. Each workspace features a dedicated auto-responder rule manager, AI parameter knobs, and real-time transaction logs.
-                        </li>
-                        <li>
-                            <strong>Link WhatsApp with Secure QR:</strong> 
-                            Open the collapsible WhatsApp Integration panel inside the dashboard. Click the status button to generate a clean, secure QR code. Scan the code using WhatsApp's "Linked Devices" option on your mobile phone to register the daemon.
-                        </li>
-                        <li>
-                            <strong>Configure Your Gemini API Key:</strong> 
-                            Paste your Google Gemini API key into the secure System & API settings card. Select your preferred engine (e.g. Gemini 1.5 Flash for speed, or Gemini 1.5 Pro for multi-step reasoning), adjust temperatures, and configure system guardrails.
-                        </li>
-                        <li>
-                            <strong>Define Auto-Responder Routing Rules:</strong> 
-                            Create targeted rules for specific phone numbers (JIDs) or group chats. Specify custom instructions (e.g. "You are an assistant for a real estate agency named Apex Property. Answer only real estate questions, be highly professional, and collect the user's name").
-                        </li>
-                        <li>
-                            <strong>Go Live and Monitor:</strong> 
-                            The bot will instantly begin processing inbound messages. Watch transactions, AI processing times, and generated replies scroll through the always-visible live console log.
-                        </li>
-                    </ol>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="section-title">Frequently Asked Questions</h3>
-                <div class="faq-container">
-                    <details class="faq-item">
-                        <summary>How does the AI Bot handle multiple target phone numbers?</summary>
-                        <div class="faq-content">
-                            The system is fully database-driven. You can create different target rules inside the dashboard, specifying target WhatsApp JIDs (phone numbers or group IDs) along with custom system prompts. When a message is received, our backend scans your active rules, retrieves the customized prompt, and instructs Gemini to respond with the exact instructions defined.
-                        </div>
-                    </details>
-                    
-                    <details class="faq-item">
-                        <summary>Is my WhatsApp connection secure and private?</summary>
-                        <div class="faq-content">
-                            Absolutely. We run completely isolated Baileys socket connections for each user. Session credentials and authentication states are securely stored in your dedicated Supabase PostgreSQL schema. We do not inspect message histories; all content is processed strictly for rendering the dashboard interface and querying your specified Gemini API models.
-                        </div>
-                    </details>
-                    
-                    <details class="faq-item">
-                        <summary>Do I need to keep the dashboard open in my browser?</summary>
-                        <div class="faq-content">
-                            No. The WhatsApp connection daemon runs persistently as a background service on the server. The client-side dashboard is simply a management interface that lets you configure prompts, view incoming message streams in real-time, and control connection status. Once linked, the bot will auto-reply even if your browser is closed.
-                        </div>
-                    </details>
-                    
-                    <details class="faq-item">
-                        <summary>What models of Gemini are supported?</summary>
-                        <div class="faq-content">
-                            We support high-performance models including Gemini 1.5 Flash (for lightning-fast, cost-effective responses) and Gemini 1.5 Pro (for complex reasoning and multi-turn workflows). You can easily configure your preferred model and temperature thresholds directly from the dashboard configuration panel.
-                        </div>
-                    </details>
-                </div>
-            </div>
         </div>
 
-        <footer class="landing-footer">
+        <footer style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 32px; margin-top: 96px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--color-on-dark-soft);">
             <span>&copy; {new Date().getFullYear()} WhatsApp AI Bot Creator. All rights reserved.</span>
             <span>Built with Astro, React, Supabase, and Gemini API.</span>
         </footer>
     </main>
+    </div>
 
     <!-- Expose Supabase credentials safely to client script -->
     <div id="supabase-config" data-url={supabaseUrl} data-key={supabaseAnonKey} style="display: none;"></div>
@@ -203,7 +96,6 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.
         const supabaseAnonKey = configEl?.dataset.key || '';
         const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-        // Client-side routing check
         supabase.auth.getSession().then(({ data: { session } }) => {
             if (session) {
                 window.location.href = '/dashboard';
@@ -219,16 +111,44 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.
         const feedback = document.getElementById('feedback-msg');
         const emailInput = document.getElementById('email') as HTMLInputElement;
         const passwordInput = document.getElementById('password') as HTMLInputElement;
+        const confirmPasswordInput = document.getElementById('confirm-password') as HTMLInputElement;
+        const confirmPasswordGroup = document.getElementById('confirm-password-group');
+        const togglePassword = document.getElementById('toggle-password');
+        const toggleConfirmPassword = document.getElementById('toggle-confirm-password');
+
+        function setupEyeToggle(btn: HTMLElement | null, input: HTMLInputElement | null) {
+            if (!btn || !input) return;
+            btn.addEventListener('click', () => {
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                btn.textContent = isPassword ? '🙈' : '👁';
+            });
+        }
+        setupEyeToggle(togglePassword, passwordInput);
+        setupEyeToggle(toggleConfirmPassword, confirmPasswordInput);
 
         function switchTab(tab) {
             activeTab = tab;
-            tabLogin?.classList.toggle('active', tab === 'login');
-            tabRegister?.classList.toggle('active', tab === 'register');
+            if (tabLogin) {
+                tabLogin.style.borderBottomColor = tab === 'login' ? 'var(--color-primary)' : 'transparent';
+                tabLogin.style.color = tab === 'login' ? 'var(--color-on-dark)' : 'var(--color-on-dark-soft)';
+            }
+            if (tabRegister) {
+                tabRegister.style.borderBottomColor = tab === 'register' ? 'var(--color-primary)' : 'transparent';
+                tabRegister.style.color = tab === 'register' ? 'var(--color-on-dark)' : 'var(--color-on-dark-soft)';
+            }
             if (submitBtn) {
                 submitBtn.textContent = tab === 'login' ? 'Sign In' : 'Create Account';
             }
+            if (confirmPasswordGroup) {
+                confirmPasswordGroup.style.display = tab === 'register' ? 'flex' : 'none';
+            }
+            if (confirmPasswordInput) {
+                confirmPasswordInput.required = tab === 'register';
+            }
             if (feedback) {
-                feedback.style.display = 'none';
+                feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: none;';
+                feedback.textContent = '';
             }
         }
 
@@ -242,36 +162,68 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.
             const email = emailInput.value.trim();
             const password = passwordInput.value;
 
-            feedback.style.display = 'none';
-            feedback.className = 'message';
+            if (activeTab === 'register') {
+                const confirmPassword = confirmPasswordInput?.value || '';
+                if (password !== confirmPassword) {
+                    feedback.textContent = 'Passwords do not match.';
+                    feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-canvas); border: 1px solid rgba(255,255,255,0.08); color: var(--color-on-dark);';
+                    return;
+                }
+            }
+
+            feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: none;';
+            feedback.textContent = '';
             submitBtn.disabled = true;
+            submitBtn.textContent = activeTab === 'login' ? 'Signing in...' : 'Creating account...';
 
             try {
                 if (activeTab === 'login') {
                     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
                     if (error) throw error;
-                    
                     const session = data.session;
                     if (session) {
                         document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=${session.expires_in}; SameSite=Lax`;
                     }
-                    
                     feedback.textContent = 'Success. Redirecting...';
-                    feedback.classList.add('success');
-                    setTimeout(() => window.location.href = '/dashboard', 600);
+                    feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-canvas); border: 1px solid rgba(255,255,255,0.08); color: var(--color-on-dark); font-weight: 600;';
+                    setTimeout(() => window.location.href = '/dashboard', 500);
                 } else {
                     const { data, error } = await supabase.auth.signUp({ email, password });
                     if (error) throw error;
-
-                    feedback.textContent = 'Account created. Check email for verification, then Sign In.';
-                    feedback.classList.add('success');
-                    switchTab('login');
+                    if (data.user && !data.session) {
+                        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+                        if (signInError) {
+                            feedback.textContent = 'Account created! Check your email for a verification link, then sign in.';
+                            feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-canvas); border: 1px solid rgba(255,255,255,0.08); color: var(--color-on-dark); font-weight: 600;';
+                            switchTab('login');
+                        } else if (signInData.session) {
+                            document.cookie = `sb-access-token=${signInData.session.access_token}; path=/; max-age=${signInData.session.expires_in}; SameSite=Lax`;
+                            feedback.textContent = 'Account created! Redirecting...';
+                            feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-canvas); border: 1px solid rgba(255,255,255,0.08); color: var(--color-on-dark); font-weight: 600;';
+                            setTimeout(() => window.location.href = '/dashboard', 500);
+                        }
+                    } else if (data.session) {
+                        document.cookie = `sb-access-token=${data.session.access_token}; path=/; max-age=${data.session.expires_in}; SameSite=Lax`;
+                        feedback.textContent = 'Account created! Redirecting...';
+                        feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-canvas); border: 1px solid rgba(255,255,255,0.08); color: var(--color-on-dark); font-weight: 600;';
+                        setTimeout(() => window.location.href = '/dashboard', 500);
+                    }
                 }
             } catch (err: any) {
-                feedback.textContent = err.message || 'Authentication error occurred.';
-                feedback.classList.add('error');
+                const msg = err.message || 'Authentication error occurred.';
+                if (msg.includes('Invalid login credentials')) {
+                    feedback.textContent = 'Invalid email or password. If you don\'t have an account, click "Create Account" above.';
+                } else if (msg.includes('Email not confirmed')) {
+                    feedback.textContent = 'Please verify your email first. Check your inbox for a confirmation link.';
+                } else if (msg.includes('User already registered')) {
+                    feedback.textContent = 'This email is already registered. Try signing in instead.';
+                } else {
+                    feedback.textContent = msg;
+                }
+                feedback.style.cssText = 'font-size: 13px; font-family: var(--font-mono); line-height: 1.625; padding: 12px 16px; border-radius: 8px; display: block; background: var(--color-canvas); border: 1px solid rgba(255,255,255,0.08); color: var(--color-on-dark);';
             } finally {
                 submitBtn.disabled = false;
+                submitBtn.textContent = activeTab === 'login' ? 'Sign In' : 'Create Account';
             }
         });
     </script>
