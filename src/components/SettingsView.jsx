@@ -6,7 +6,9 @@ export default function SettingsView({
     businessEnabled, handleToggleBusiness,
     geminiKey, setGeminiKey,
     geminiModel, setGeminiModel,
+    chatHistoryLimit, setChatHistoryLimit,
     saveEngineSettings,
+    handleClearAllChats,
     botStatus, user, supabase,
     aiContacts, businessExcludeContacts, knowledgeRows,
     hideResponderTab, setHideResponderTab,
@@ -83,9 +85,17 @@ export default function SettingsView({
                                     <option value="gemini-2.5-pro">gemini-2.5-pro (limited)</option>
                                     <option value="gemini-1.5-flash">gemini-1.5-flash (legacy)</option>
                                 </select>
-                                <button type="button" onClick={saveEngineSettings} style={{ whiteSpace: 'nowrap', padding: '12px 20px', fontSize: 14, fontWeight: 500, borderRadius: 8, background: 'var(--color-primary)', color: 'var(--color-on-primary)', border: 'none', cursor: 'pointer' }}>Save</button>
                             </div>
                         </div>
+                        <div>
+                            <label htmlFor="settings-history-limit" style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--color-muted)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Chat Context (Previous Messages)</label>
+                            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                                <input type="range" id="settings-history-limit" min="0" max="50" step="5" value={chatHistoryLimit} onChange={(e) => setChatHistoryLimit(Number(e.target.value))} style={{ flex: 1, cursor: 'pointer', accentColor: 'var(--color-primary)', height: 4 }} />
+                                <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-ink)', minWidth: 28, textAlign: 'center', padding: '4px 8px', background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', borderRadius: 6 }}>{chatHistoryLimit}</span>
+                            </div>
+                            <p style={{ fontSize: 11, color: 'var(--color-muted)', marginTop: 6, lineHeight: 1.5 }}>Number of previous messages sent to AI for context. Higher = better memory but uses more tokens. Set to 0 to disable context.</p>
+                        </div>
+                        <button type="button" onClick={saveEngineSettings} style={{ width: '100%', padding: '12px 20px', fontSize: 14, fontWeight: 500, borderRadius: 8, background: 'var(--color-primary)', color: 'var(--color-on-primary)', border: 'none', cursor: 'pointer' }}>Save Engine Settings</button>
                     </div>
                 </div>
             </div>

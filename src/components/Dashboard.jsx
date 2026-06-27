@@ -23,6 +23,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
 
     const [geminiKey, setGeminiKey] = useState('');
     const [geminiModel, setGeminiModel] = useState('gemini-2.5-flash');
+    const [chatHistoryLimit, setChatHistoryLimit] = useState(10);
     const [aiContacts, setAiContacts] = useState([]);
     const [individualEnabled, setIndividualEnabled] = useState(true);
 
@@ -49,6 +50,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
     const [exclusionInput, setExclusionInput] = useState('');
 
     const [knowledgeRows, setKnowledgeRows] = useState([]);
+    const [customPresets, setCustomPresets] = useState([]);
     const [newTrigger, setNewTrigger] = useState('');
     const [newResponse, setNewResponse] = useState('');
     const [editingRowId, setEditingRowId] = useState(null);
@@ -220,6 +222,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
             if (data) {
                 setGeminiKey(data.gemini_api_key || '');
                 setGeminiModel(data.gemini_model || 'gemini-2.5-flash');
+                setChatHistoryLimit(data.chat_history_limit ?? 10);
                 const rawContacts = data.ai_contacts || [];
                 const isDisabled = rawContacts.some(c => c.number === '__SYSTEM_INDIVIDUAL_RESPONDER_DISABLED__');
                 setIndividualEnabled(!isDisabled);
@@ -228,6 +231,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
                 setBusinessPrompt(data.business_prompt || '');
                 setBusinessStyle(data.business_style || '');
                 setBusinessExcludeContacts(data.business_exclude_contacts || []);
+                setCustomPresets(data.custom_presets || []);
             }
         } catch (err) { console.error('Error loading config:', err); }
     };
@@ -315,7 +319,7 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
 
     const saveEngineSettings = async () => {
         try {
-            const { error } = await supabase.from('user_configs').update({ gemini_api_key: geminiKey, gemini_model: geminiModel }).eq('user_id', user.id);
+            const { error } = await supabase.from('user_configs').update({ gemini_api_key: geminiKey, gemini_model: geminiModel, chat_history_limit: chatHistoryLimit }).eq('user_id', user.id);
             if (error) throw error;
             alert('Engine settings saved successfully!');
         } catch (err) { alert('Failed to save engine settings: ' + err.message); }
@@ -368,14 +372,14 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
 
     const handleAddContactConfig = async () => {
         if (!targetJid.trim()) { alert('Please specify a JID first!'); return; }
-        const systemPrompt = talkingStylePreset ? talkingStylePreset : customTalkStyle;
+        const instructions = customTalkStyle.trim() || talkingStylePreset;
         const updatedContact = { 
             number: targetJid.trim(),
             name: contactName.trim(),
-            systemPrompt: systemPrompt.trim(), 
-            talkingStyle: systemPrompt.trim(), 
-            senderContext: senderContext.trim(), 
-            contactContext: contactContext.trim(),
+            systemPrompt: instructions, 
+            talkingStyle: instructions, 
+            senderContext: '', 
+            contactContext: '',
             allowBusinessKnowledge: !!allowBusinessKnowledge
         };
         const updatedList = [...aiContacts];
@@ -401,6 +405,24 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
             if (error) throw error;
             setAiContacts(updatedList);
         } catch (err) { alert('Failed to remove AI JID config: ' + err.message); }
+    };
+
+    const handleSaveCustomPreset = async (name, value) => {
+        const updated = [...customPresets, { name, value }];
+        try {
+            const { error } = await supabase.from('user_configs').update({ custom_presets: updated }).eq('user_id', user.id);
+            if (error) throw error;
+            setCustomPresets(updated);
+        } catch (err) { alert('Failed to save preset: ' + err.message); }
+    };
+
+    const handleDeleteCustomPreset = async (index) => {
+        const updated = customPresets.filter((_, i) => i !== index);
+        try {
+            const { error } = await supabase.from('user_configs').update({ custom_presets: updated }).eq('user_id', user.id);
+            if (error) throw error;
+            setCustomPresets(updated);
+        } catch (err) { alert('Failed to delete preset: ' + err.message); }
     };
 
     const handleToggleIndividualBot = async (jid) => {
@@ -496,21 +518,14 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
     };
 
     const handleEditConfig = (c) => {
-        setTargetJid(c.number); setContactName(c.name || ''); setSenderContext(c.senderContext || ''); setContactContext(c.contactContext || '');
+        setTargetJid(c.number); setContactName(c.name || '');
+        // Load all context into the single instructions field
+        const combined = [c.systemPrompt, c.senderContext, c.contactContext].filter(Boolean).join('\n').trim();
+        setCustomTalkStyle(combined);
         setAllowBusinessKnowledge(!!c.allowBusinessKnowledge);
-        const presets = [
-            "Keep responses warm, friendly, helpful, and conversational. Use natural casual language with appropriate emojis.",
-            "Keep answers extremely brief, direct, and under two sentences. Avoid unnecessary fluff or greeting patterns.",
-            "Respond as a polite, helpful, and professional business assistant. Structure with clear bullet points if listing options.",
-            "Respond casually in Hinglish (a mix of Hindi and English) using Latin characters. Keep it friendly and informal.",
-            "Act as a proactive sales representative. Be persuasive, offer solutions, and nudge the user toward booking a call or meeting.",
-            "Be extremely patient, empathetic, and reassuring. Focus on step-by-step customer support and problem resolution.",
-            "Be precise, detail-oriented, and objective. Focus on facts, troubleshooting steps, and technical accuracy.",
-            "Reply in a highly sarcastic, witty, and slightly roasty tone. Use informal slang.",
-            "Use Gen-Z slang (no cap, bet, fr fr, lowkey, skibidi, rizz, gyatt). Keep it casual."
-        ];
-        if (presets.includes(c.systemPrompt)) { setTalkingStylePreset(c.systemPrompt); setCustomTalkStyle(''); }
-        else { setTalkingStylePreset(''); setCustomTalkStyle(c.systemPrompt || ''); }
+        const presets = [];
+        // Don't try to match old presets — just load into textarea
+        setTalkingStylePreset('');
     };
 
     const handleSendQuickReply = async (e) => {
@@ -555,6 +570,18 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
         } catch (err) {
             alert('Clear logs error: ' + err.message);
         }
+    };
+
+    const handleClearAllChats = async () => {
+        if (!confirm('Are you sure you want to clear ALL chat history? This cannot be undone.')) return;
+        try {
+            const { error } = await supabase.from('chat_logs').delete().eq('user_id', user.id);
+            if (error) throw error;
+            setRecentChats([]);
+            setActiveChatJid(null);
+            setActiveChatMessages([]);
+            alert('All chat history cleared.');
+        } catch (err) { alert('Failed to clear chats: ' + err.message); }
     };
 
     const handleLogout = async () => {
@@ -702,13 +729,12 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
                             contactName={contactName} setContactName={setContactName}
                             talkingStylePreset={talkingStylePreset} setTalkingStylePreset={setTalkingStylePreset}
                             customTalkStyle={customTalkStyle} setCustomTalkStyle={setCustomTalkStyle}
-                            senderContext={senderContext} setSenderContext={setSenderContext}
-                            contactContext={contactContext} setContactContext={setContactContext}
                             allowBusinessKnowledge={allowBusinessKnowledge} setAllowBusinessKnowledge={setAllowBusinessKnowledge}
                             handleAddContactConfig={handleAddContactConfig}
                             aiContacts={aiContacts} handleEditConfig={handleEditConfig} handleRemoveContactConfig={handleRemoveContactConfig}
                             setActiveChatJid={setActiveChatJid}
                             setActiveView={setActiveView}
+                            customPresets={customPresets} handleSaveCustomPreset={handleSaveCustomPreset} handleDeleteCustomPreset={handleDeleteCustomPreset}
                         />
                     )}
 
@@ -731,7 +757,9 @@ export default function Dashboard({ supabaseUrl, supabaseAnonKey, botUrl: rawBot
                             businessEnabled={businessEnabled} handleToggleBusiness={handleToggleBusiness}
                             geminiKey={geminiKey} setGeminiKey={setGeminiKey}
                             geminiModel={geminiModel} setGeminiModel={setGeminiModel}
+                            chatHistoryLimit={chatHistoryLimit} setChatHistoryLimit={setChatHistoryLimit}
                             saveEngineSettings={saveEngineSettings}
+                            handleClearAllChats={handleClearAllChats}
                             botStatus={botStatus} user={user} supabase={supabase}
                             aiContacts={aiContacts} businessExcludeContacts={businessExcludeContacts} knowledgeRows={knowledgeRows}
                             hideResponderTab={hideResponderTab} setHideResponderTab={handleToggleHideResponder}
